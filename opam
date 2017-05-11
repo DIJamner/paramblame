@@ -1,11 +1,11 @@
 opam-version: "1.2"
-name: "funtal"
+name: "paramblame"
 version: "dev"
-maintainer: "Daniel Patterson <dbp@ccs.neu.edu>"
-authors: ["Daniel Patterson <dbp@ccs.neu.edu>"]
-homepage: "https://github.com/dbp/funtal"
-bug-reports: "https://github.com/dbp/funtal/issues"
-dev-repo: "https://github.com/dbp/funtal.git"
+maintainer: "Dustin Jamner <jamner.d@husky.neu.edu>"
+authors: ["Dustin Jamner <jamner.d@husky.neu.edu>"]
+homepage: "https://github.com/dijamner/paramblame"
+bug-reports: "https://github.com/dijamner/paramblame/issues"
+dev-repo: "https://github.com/dijamner/paramblame.git"
 license: "none for now"
 
 build: [
