@@ -30,7 +30,7 @@ module rec FTAL : sig
   val set_heap : context -> TAL.psi -> context
   val set_stack : context -> TAL.sigma -> context
 
-  val default_context : TAL.q -> context
+  val default_context : context
 
   val tc : context -> e -> t * TAL.sigma
   val tc_is : l -> context -> TAL.instr list -> unit
@@ -259,7 +259,7 @@ end = struct
 
   type context = TAL.psi * TAL.delta * F.gamma * TAL.chi * TAL.q * TAL.sigma
 
-  let default_context q = ([],[],[],[],q,TAL.SConcrete [])
+  let default_context = ([],[],[],[],TAL.QOut,TAL.SConcrete [])
 
   let get_tyenv (_,d,_,_,_,_) = d
   let set_tyenv (p,_,g,c,q,s) d = (p,d,g,c,q,s)

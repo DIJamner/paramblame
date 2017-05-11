@@ -40,16 +40,7 @@ let parse_report_loc parse_fun str =
     end
 
 let simple = {|
-FT [int, ?] (
-[mv ra, lh;
- salloc 1; mv r1, 0; sst 0, r1;
- call l {*, end{int; *}}],
-[l -> box code [z, e]
-          {ra: box forall[]. {r1:int; z} e; int :: z} ra.
-          [sld r1, 0;
-           sfree 1;
-           ret ra {r1}],
- lh -> box code [] {r1:int; *} end{int; *}. [halt int, * {r1}]])
+(lam (x : int).x + 4) 5
 |}
 
 let omega = {|
@@ -57,49 +48,7 @@ let omega = {|
 (fold (mu a. (a) -> a) lam(f : mu a. (a) -> a).((unfold f) f))
 |}
 
-let import = {|
-FT [int, ?] ([import r1, * as z, int TF{10}; halt int, * {r1}], [])
-|}
-
-let higher_order = Ftal.F.show_exp Examples.higher_order
 let factorial_f = Ftal.(F.show_exp (F.EApp (dummy_loc, Examples.factorial_f, [F.EInt (dummy_loc, 3)])))
-let factorial_t = Ftal.(F.show_exp (F.EApp (dummy_loc, Examples.factorial_t, [F.EInt (dummy_loc, 3)])))
-let call_to_call = Ftal.(F.show_exp (F.(EBoundary (dummy_loc, TInt, None, Examples.call_to_call))))
-let blocks_1 = Ftal.(F.show_exp (F.EApp (dummy_loc, Examples.blocks_1, [F.EInt (dummy_loc, 3)])))
-let blocks_2 = Ftal.(F.show_exp (F.EApp (dummy_loc, Examples.blocks_2, [F.EInt (dummy_loc, 3)])))
-let with_ref = Ftal.F.show_exp Examples.with_ref
-
-let stack_error = {|
-FT [int, ?] (
-[mv ra, lh;
- salloc 1; mv r1, 0; sst 0, r1;
- call l {*, end{int; *}}],
-[l -> box code [z, e]
-          {ra: box forall[]. {r1:int; z} e; int :: z} ra.
-          [sld r1, 0;
-           ret ra {r1}],
- lh -> box code [] {r1:int; *} end{int; *}. [halt int, * {r1}]])
-|}
-
-let call_error = {|
-FT[int,?](
-[mv ra, lh;
- call l {*, end{int; *}}],
-[l -> box code [z1, e1]
-       {ra: box forall[]. {r1:int; z1} e1; z1} ra.
-       [salloc 1;
-        sst 0, ra;
-        mv ra, l1h[z1,e1];
-        call l1 {box forall[]. {r1:int; z1} e1 :: z1, 0}],
- l1 -> box code [z2, e]
-       {ra: box forall[]. {r1:int; z2} e; z2} ra.
-       [mv r1, 0;
-        jmp ra],
- l1h -> box code [z3,e3] {r1:int; box forall[]. {r1:int; z3} e3 :: z3} 0.
-            [sld ra, 0; sfree 1; ret ra {r1}],
- lh -> box code [] {r1:int; *} end{int; *}.
-            [halt int, * {r1}]])
-|} (*jmp ra should be ret ra {r1}],*)
 
 let set_error ln m =
   let _ = Js.Unsafe.((coerce global)##seterror (Js.number_of_float (float_of_int ln)) (Js.string m)) in
@@ -148,9 +97,7 @@ let _ =
         ()
     in
     let _ = set_text "pc" (string_of_int (List.length past)) in
-    let _ = set_text "registers" (Ftal.TAL.show_regm r) in
-    let _ = set_text "stack" (Ftal.TAL.show_stackm s) in
-    let _ = set_text "heap" (Ftal.TAL.show_heapm h) in
+    (* let _ = set_text "heap" (Ftal.T A L.show_heapm h) in (* TODO: name store*) *)
     ()
   in
   let next' _ =
@@ -168,7 +115,7 @@ let _ =
           try
             match parse_report_loc Parse.f_expression_eof s with
             | `Success e -> begin
-                let _ = tc (default_context TAL.QOut) (FC e) in
+                let _ = tc default_context (FC e) in
                 hist := ((e, ([],[],[])), []);
                 refresh ();
                 clear_errors ();
@@ -212,15 +159,5 @@ let _ =
   hide_machine ();
   set_click "simple" (ehandle simple);
   set_click "omega" (ehandle omega);
-  set_click "import" (ehandle import);
-  set_click "call_to_call" (ehandle call_to_call);
-  set_click "higher_order" (ehandle higher_order);
-  set_click "blocks_1" (ehandle blocks_1);
-  set_click "blocks_2" (ehandle blocks_2);
-  set_click "factorial_f" (ehandle factorial_f);
-  set_click "factorial_t" (ehandle factorial_t);
-  set_click "with_ref" (ehandle with_ref);
-  set_click "stack_error" (ehandle stack_error);
-  set_click "call_error" (ehandle call_error);
   set_editor simple;
   ()
