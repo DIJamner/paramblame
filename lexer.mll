@@ -30,17 +30,14 @@ rule token = parse
   | "exists" { EXISTS }
   | "." { DOT }
   | "mu" { MU }
-  | "ref" { REF }
   | "<" { LANGLE }
   | "," { COMMA }
   | ">" { RANGLE }
-  | "box" { BOX }
   | "(" { LPAREN }
   | ")" { RPAREN }
   | "pack "{ PACK }
   | "as" { AS }
   | "fold" { FOLD }
-  | "code" { CODE }
   | "[" { LBRACKET }
   | "]" { RBRACKET }
   | "{" { LBRACE }
@@ -53,25 +50,7 @@ rule token = parse
   | ":" { COLON }
   | "::" { DOUBLECOLON }
   | "end" { END }
-  (* | "nil" { NIL } *)
   | "out" { OUT }
-  | "jmp" { JMP }
-  | "call" { CALL }
-  | "ret" { RET }
-  | "halt" { HALT }
-  | "add" { ADD }
-  | "mul" { MUL }
-  | "sub" { SUB }
-  | "bnz" { BNZ }
-  | "ld" { LD }
-  | "st" { ST }
-  | "ralloc" { RALLOC }
-  | "balloc" { BALLOC }
-  | "mv" { MV }
-  | "salloc" { SALLOC }
-  | "sfree" { SFREE }
-  | "sld" { SLD }
-  | "sst" { SST }
   | "unpack" { UNPACK }
   | "unfold" { UNFOLD }
   | "if0" { IF0 }
@@ -82,10 +61,6 @@ rule token = parse
   | "lam"  { LAMBDA }
   | "->" { ARROW }
   | "?" { QUESTION }
-  | "FT" { FT }
-  | "TF" { TF }
-  | "import" { IMPORT }
-  | "protect" { PROTECT }
   | identifier { classify_identifier (Lexing.lexeme lexbuf) }
   | eof { EOF }
   | _ { lexing_error lexbuf }
