@@ -19,20 +19,6 @@
 %start<Ftal.F.exp> f_expression_eof
 
 %{ open Ftal
-   open TAL
-
-   (* NOTE(gasche 2017-02-19): see #5. We merged the syntactic categories of word
-      values and small values, as having both created a lot of conflicts
-      in the grammar. Whenever we want to parse a word value (a small value
-      without registers), we parse a small value then call the [lower_value]
-      function below, which partially projects into word values. *)
-   exception LowerValueError of u
-   let rec lower_value : u -> w = function
-     | UW (_,w) -> w
-     | UR (_,_) as u -> raise (LowerValueError u)
-     | UPack (l, t, u, s, t') -> WPack (l, t, lower_value u, s, t')
-     | UFold (l, s, t, u) -> WFold (l, s, t, lower_value u)
-     | UApp (l, u, omegas) -> WApp (l, lower_value u, omegas)
 %}
 
 
