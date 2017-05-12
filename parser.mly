@@ -1,16 +1,10 @@
-%token JMP CALL RET HALT
-%token BNZ LD ST RALLOC BALLOC MV SALLOC SFREE SLD SST
 %token PACK AS UNPACK FOLD UNFOLD
-%token IMPORT PROTECT
-%token CODE END OUT /* NIL */
-%token ADD MUL SUB /* these are the assembly keywords */
 %token PLUS MINUS TIMES /* these are the binary symbols */
 %token FORALL EXISTS MU
-%token UNIT INT REF BOX
+%token UNIT INT
 %token LANGLE RANGLE LBRACKET RBRACKET LBRACE RBRACE LPAREN RPAREN
 %token DOT COMMA COLON SEMICOLON DOUBLECOLON ARROW QUESTION
 %token LAMBDA IF0 PI
-%token FT TF
 %token<string> A_IDENTIFIER Z_IDENTIFIER E_IDENTIFIER OTHER_IDENTIFIER
 %token<int> INTEGER
 %token<string> REGISTER
@@ -44,7 +38,6 @@
 
 %%
 
-component_eof: c=component EOF { c }
 /*
 memory_eof: m=memory EOF { m }
 instruction_sequence_eof: i=instruction_sequence EOF { i }
@@ -80,8 +73,6 @@ f_simple_expression:
 | n=nat { F.EInt (cpos $startpos, n) }
 | es=tuple(f_expression) { F.ETuple (cpos $startpos, es) }
 | PI n=nat LPAREN e=f_expression RPAREN { F.EPi (cpos $startpos, n, e) }
-| FT LBRACKET tau=f_type COMMA sigma=stack_typing_annot RBRACKET c=component
-  { F.EBoundary (cpos $startpos, tau, sigma, c) }
 | LPAREN e=f_expression RPAREN { e }
 
 f_app_expression:
@@ -129,8 +120,6 @@ value_type:
 | INT { TInt }
 | ex=existential_type { let (alpha, tau) = ex in TExists (alpha, tau) }
 | mu=mu_type { let (alpha, tau) = mu in TRec (alpha, tau) }
-| REF taus=tuple(value_type) { TTupleRef taus }
-| BOX psi=heap_value_type { TBox psi }
 
   existential_type:
   | EXISTS alpha=type_variable DOT tau=value_type { (alpha, tau) }
@@ -175,28 +164,6 @@ small_value:
 type_instantiation:
 | tau=value_type { OT tau }
 | sigma=stack_typing { OS sigma }
-| q=return_marker { OQ q }
-
-heap_value_type:
-| FORALL delta=type_env DOT
-  LBRACE chi=simple_register_typing SEMICOLON sigma=stack_typing
-  RBRACE q=return_marker
-  { PBlock (delta, chi, sigma, q) }
-| taus=tuple(value_type) { PTuple taus }
-
-heap_value:
-| mut=mutability_annotation
-  CODE
-  delta=type_env
-  LBRACE chi=simple_register_typing SEMICOLON sigma=stack_typing
-  RBRACE q=return_marker
-  DOT i=instruction_sequence
-  { (mut, HCode (delta, chi, sigma, q, i)) }
-| mut=mutability_annotation ws=tuple(word_value) { (mut, HTuple ws) }
-
-  mutability_annotation:
-  | BOX { Box }
-  | REF { Ref }
 
 /*
 register_typing: li=bracketed(simple_register_typing) { li }
@@ -221,13 +188,6 @@ stack_typing:
   | bigdot
     { (fun prefix -> SConcrete prefix) }
 
-return_marker:
-| r=register { QR r }
-| i=nat { QI i }
-| epsilon=return_marker_variable { QEpsilon epsilon }
-| END LBRACE tau=value_type SEMICOLON sigma=stack_typing RBRACE
-  { QEnd (tau, sigma) }
-| OUT { QOut }
 
 type_env: li=bracketed(simple_type_env) { li }
 simple_type_env: li=separated_list(COMMA, type_env_elem) { li }
@@ -236,9 +196,6 @@ simple_type_env: li=separated_list(COMMA, type_env_elem) { li }
   | alpha=type_variable { DAlpha alpha }
   | zeta=stack_typing_variable { DZeta zeta }
   | epsilon=return_marker_variable { DEpsilon epsilon }
-
-heap_fragment: li=bracketed(simple_heap_fragment) { li }
-simple_heap_fragment: li=separated_list(COMMA, binding(location,heap_value)) { li }
 
 /*
 memory:
@@ -258,68 +215,6 @@ simple_register_file: li=separated_list(COMMA, binding(register, word_value)) { 
 /*
 stack: ws=list(w=word_value DOUBLECOLON {w}) NIL { ws }
 */
-
-instruction_sequence:
-LBRACKET i=simple_instruction_sequence RBRACKET { i }
-
-simple_instruction_sequence:
-| i=single_instruction SEMICOLON seq=simple_instruction_sequence
-  { i :: seq }
-| i=final_instruction option(SEMICOLON)
-  { [i] }
-
-final_instruction:
-| JMP u=small_value
-  { Ijmp (cpos $startpos, u) }
-| CALL u=small_value LBRACE sigma=stack_typing COMMA q=return_marker RBRACE
-  { Icall (cpos $startpos, u, sigma, q) }
-| RET r=register rr=bracereg
-  { Iret (cpos $startpos, r, rr) }
-| HALT tau=value_type COMMA sigma=stack_typing rr=bracereg
-  { Ihalt (cpos $startpos, tau, sigma, rr) }
-
-single_instruction:
-| op=aop rd=register COMMA rs=register COMMA u=small_value
-  { Iaop (cpos $startpos, op, rd, rs, u) }
-| BNZ r=register COMMA u=small_value
-  { Ibnz (cpos $startpos, r, u) }
-| LD rd=register COMMA rs=register i=bracketpos
-  { Ild (cpos $startpos, rd, rs, i) }
-| ST rd=register i=bracketpos COMMA rs=register
-  { Ist (cpos $startpos, rd, i, rs) }
-| RALLOC rd=register COMMA n=nat
-  { Iralloc (cpos $startpos, rd, n) }
-| BALLOC rd=register COMMA n=nat
-  { Iballoc (cpos $startpos, rd, n) }
-| MV rd=register COMMA u=small_value
-  { Imv (cpos $startpos, rd, u) }
-| SALLOC n=nat
-  { Isalloc (cpos $startpos, n) }
-| SFREE n=nat
-  { Isfree (cpos $startpos, n) }
-| SLD rd=register COMMA i=nat
-  { Isld (cpos $startpos, rd, i) }
-| SST i=nat COMMA rs=register
-  { Isst (cpos $startpos, i, rs) }
-| UNPACK LANGLE alpha=type_variable COMMA rd=register RANGLE COMMA u=small_value
-  { Iunpack (cpos $startpos, alpha, rd, u) }
-| UNFOLD rd=register COMMA u=small_value
-  { Iunfold (cpos $startpos, rd, u) }
-| IMPORT r=register
-  COMMA sigma=stack_typing AS zeta=stack_typing_variable
-  COMMA tau=f_type TF LBRACE e=f_expression RBRACE
-  { Iimport (cpos $startpos, r, zeta, sigma, tau, e) }
-| PROTECT phi=stack_prefix COMMA zeta=stack_typing_variable
-  { Iprotect (cpos $startpos,phi, zeta) }
-
-  aop:
-  | ADD { Add }
-  | SUB { Sub }
-  | MUL { Mult }
-
-component:
-| LPAREN i=instruction_sequence COMMA h=heap_fragment RPAREN
-  { (cpos $startpos, i, h) }
 
 type_variable:
 | alpha=A_IDENTIFIER { alpha }

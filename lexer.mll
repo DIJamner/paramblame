@@ -49,8 +49,6 @@ rule token = parse
   | "}" { RBRACKET }
   | ":" { COLON }
   | "::" { DOUBLECOLON }
-  | "end" { END }
-  | "out" { OUT }
   | "unpack" { UNPACK }
   | "unfold" { UNFOLD }
   | "if0" { IF0 }
