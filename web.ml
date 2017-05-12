@@ -44,8 +44,8 @@ let simple = {|
 |}
 
 let omega = {|
-(lam(f : mu a. (a) -> a).((unfold f) f))
-(fold (mu a. (a) -> a) lam(f : mu a. (a) -> a).((unfold f) f))
+(lam(f : * -> *).(f (f : * -> * => * )))
+((lam(f : * -> *).(f (f : * -> * => * ))) : ( * -> * ) -> * => * -> * )
 |}
 
 let factorial_f = Ftal.(F.show_exp (F.EApp (dummy_loc, Examples.factorial_f, [F.EInt (dummy_loc, 3)])))

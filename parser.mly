@@ -3,7 +3,7 @@
 %token FORALL EXISTS MU
 %token UNIT INT
 %token LANGLE RANGLE LBRACKET RBRACKET LBRACE RBRACE LPAREN RPAREN
-%token DOT COMMA COLON SEMICOLON DOUBLECOLON ARROW QUESTION
+%token DOT COMMA COLON SEMICOLON DOUBLECOLON ARROW QUESTION CAST
 %token LAMBDA IF0 PI
 %token<string> A_IDENTIFIER Z_IDENTIFIER E_IDENTIFIER OTHER_IDENTIFIER
 %token<int> INTEGER
@@ -49,6 +49,10 @@ f_type_eof: tau=f_type EOF { tau }
 */
 f_expression_eof: e=f_expression EOF { e }
 
+conv_lbl:
+| PLUS a=type_name { () }
+| MINUS a=type_name { () }
+
 f_type:
 | alpha=f_type_variable { F.TVar alpha }
 | UNIT { F.TUnit }
@@ -57,6 +61,7 @@ f_type:
   { F.TArrow (taus, tau) }
 | mu=f_mu_type { let (alpha, tau) = mu in F.TRec (alpha, tau) }
 | taus=tuple(f_type) { F.TTuple taus }
+| TIMES { F.TUnit }
 
   f_type_variable: alpha=identifier { alpha }
   f_mu_type: MU alpha=f_type_variable DOT tau=f_type { (alpha, tau) }
@@ -68,6 +73,8 @@ f_simple_expression:
 | es=tuple(f_expression) { F.ETuple (cpos $startpos, es) }
 | PI n=nat LPAREN e=f_expression RPAREN { F.EPi (cpos $startpos, n, e) }
 | LPAREN e=f_expression RPAREN { e }
+| LPAREN e=f_expression COLON t1=f_type a=conv_lbl CAST t2 = f_type RPAREN { e }
+| LPAREN e=f_expression COLON t1=f_type CAST t2 = f_type RPAREN { e }
 
 f_app_expression:
 | e=f_simple_expression { e }
@@ -118,6 +125,9 @@ stack: ws=list(w=word_value DOUBLECOLON {w}) NIL { ws }
 */
 
 type_variable:
+| alpha=A_IDENTIFIER { alpha }
+
+type_name:
 | alpha=A_IDENTIFIER { alpha }
 
 location:
