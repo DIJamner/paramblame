@@ -42,5 +42,5 @@ configure:
 
 install-deps:
 	opam update
-	opam pin add funtal . --no-action # tell opam about a local "funtal" package
-	opam install --deps-only funtal   # then install its dependencies
+	opam pin add paramblame . --no-action # tell opam about a local "funtal" package
+	opam install --deps-only paramblame   # then install its dependencies
