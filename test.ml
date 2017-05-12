@@ -17,7 +17,7 @@ let roundtrip ?source comp =
         close_out chan;
   in
   let write_result () =
-    let doc = TALP.p_component comp in
+    let doc = FP.p_exp comp in
     let chan = open_out roundtrip in
     PPrintEngine.ToChannel.pretty 0.8 80 chan doc;
     flush chan;
@@ -25,16 +25,13 @@ let roundtrip ?source comp =
   in
   write_source ();
   write_result ();
-  match Parse.parse_file Parse.component_eof roundtrip with
+  match Parse.parse_file Parse.f_expression_eof roundtrip with
   | exception exn ->
     Printf.eprintf "%!\nRountrip failure %S %S%!\n" orig roundtrip;
     comp
   | roundtripped_comp ->
     Sys.remove orig; Sys.remove roundtrip;
     roundtripped_comp
-
-let tal_comp str =
-  roundtrip ~source:str (Parse.parse_string Parse.component_eof str)
 
 let empty = ([],[],[])
 
@@ -69,55 +66,6 @@ let assert_raises_typeerror (f : unit -> 'a) : unit =
   FTAL.(try (f (); assert_failure "didn't raise an exception")
         with TypeError _  -> ())
 
-let call_st_exc2 =
-   F.EBoundary (dummy_loc, F.TInt, None,
-    tal_comp
-      "([mv ra, lh;
-         call l {*, end{int; *}}],
-        [l -> box code [z, e]
-               {ra: box forall[]. {r1:int; z} e; z} ra.
-               [salloc 1;
-                sst 0, ra;
-                mv ra, l1h;
-                call l1 {box forall[]. {r1:int; z} e :: *, 0}],
-         l1 -> box code [z, e]
-               {ra: box forall[]. {r1:int; z} e, r1: int; z} ra.
-               [mv r1, 0;
-                ret ra {r1}],
-         l1h -> box code [] {r1:int; box forall[]. {r1:int; *} e :: *} 0. [sld ra, 0; sfree 1; ret ra {r1}],
-         lh -> box code [] {r1:int; *} end{int; *}. [halt int, * {r1}]])")
-
-
-let test_call_st_ty_exc2 _ =
-  assert_raises_typeerror
-    (fun _ -> FTAL.tc
-       FTAL.default_context
-       (FTAL.FC call_st_exc2))
-
-let call_st_exc3 =
-  F.EBoundary (dummy_loc, F.TInt, None,
-    tal_comp
-      "([mv ra, lh;
-         call l {*, end{int; *}}],
-        [l -> box code [z, e]
-               {ra: box forall[]. {r1:int; z} e; z} ra.
-               [salloc 1;
-                sst 0, ra;
-                mv ra, l1h;
-                call l1 {*, 0}],
-         l1 -> box code [z, e]
-               {ra: box forall[]. {r1:int; z} e; z} ra.
-               [mv r1, 0;
-                ret ra {r1}],
-         l1h -> box code [] {r1:int; box forall[]. {r1:int; *} e :: *} 0. [sld ra, 0; sfree 1; ret ra {r1}],
-         lh -> box code [] {r1:int; *} end{int; *}. [halt int, * {r1}]])")
-
-let test_call_st_ty_exc3 _ =
-  assert_raises_typeerror
-    (fun _ -> FTAL.tc
-       FTAL.default_context
-       (FTAL.FC call_st_exc3))
-
 
 let test_factorial_f_ty _ =
   assert_equal
@@ -131,15 +79,6 @@ let test_examples _ =
   let assert_roundtrip_f fexpr =
     let reparsed = Parse.parse_string Parse.f_expression_eof (Ftal.F.show_exp fexpr) in
     let rereparsed = Parse.parse_string Parse.f_expression_eof (Ftal.F.show_exp reparsed) in
-    assert_equal reparsed rereparsed in
-  let assert_roundtrip_c comp =
-    let show_comp comp =
-      let doc = Ftal.TALP.p_component comp in
-      let buf = Buffer.create 123 in
-      PPrintEngine.ToBuffer.pretty 0.8 80 buf doc;
-      Buffer.contents buf in
-    let reparsed = Parse.parse_string Parse.component_eof (show_comp comp) in
-    let rereparsed = Parse.parse_string Parse.component_eof (show_comp reparsed) in
     assert_equal reparsed rereparsed in
   assert_roundtrip_f Examples.factorial_f;
   ()
