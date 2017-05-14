@@ -2808,6 +2808,10 @@ end = struct
     | AnyTy -> !^"*"
     (* | TTuple ts -> nest 2 (langle ^^ group (separate_map (comma ^^ break 1) p_ty ts) ^^ rangle) TODO: pairs *)
 
+  let p_lbl = function
+    | PosConvLbl a -> !^"+" ^^ !^a
+    | NegConvLbl a -> !^"-" ^^ !^a
+
   let rec p_simple_exp (e : exp) : document = match e with
     | VarExp e -> !^e
     | IntExp n -> !^(string_of_int n)
@@ -2830,6 +2834,13 @@ end = struct
 
   and p_arith_exp e = p_sum_exp e
 
+  and p_cast_exp = function
+    | ConvExp (e, t1, lbl, t2) -> p_cast_exp e ^^ break 1 ^^ colon ^^ space
+      ^^ p_ty t1 ^^ break 1 ^^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2
+    | CastExp (e, t1, lbl, t2) -> p_cast_exp e ^^ break 1 ^^ colon ^^ space
+      ^^ p_ty t1 ^^ break 1 ^^ !^"=>" ^^ space ^^ p_ty t2 (* TODO: lbl *)
+      | e -> p_arith_exp e
+
   and p_exp (e : exp) : document =
     group @@ nest 2 (match e with
     | IfExp(et,e1,e2) ->
@@ -2838,7 +2849,7 @@ end = struct
       ^^ break 1 ^^ p_simple_exp e2
     | LamExp(x, t, e) ->
       !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^^ break 1 ^^ p_exp e
-    | e -> p_sum_exp e
+    | e -> p_cast_exp e
   )
 
   and p_binop (b : op) : document =
