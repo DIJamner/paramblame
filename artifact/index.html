@@ -2,44 +2,31 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>FunTAL: mixing a functional language with assembly.</title>
+    <title>Theorems for Free for Free</title>
     <link rel="stylesheet" type="text/css" href="codemirror.css">
     <link rel="stylesheet" type="text/css" href="style.css">
   </head>
 
   <body>
     <div class="holder">
-      <h1>FunTAL: mixing a functional language with assembly.</h1>
+      <h1>UNDER CONSTRUCTION: Theorems for Free for Free...</h1>
 
-      <h3>Daniel Patterson, Jamie Perconti, Christos Dimoulas, Amal Ahmed.</h3>
-      <h4>To appear in Programming Language Design and Implementation (PLDI) 2017.</h4>
+      <h3>Amal Ahmed, Dustin Jamner, Jeremy Siek, Philip Wadler</h3>
+      <h4>To appear at the International Conference on Functional Programming (ICFP) 2017.</h4>
 
-      <h3>Draft <a href="https://dbp.io/pubs/2017/funtal.pdf">paper</a> and <a href="https://dbp.io/pubs/2017/funtal-tr.pdf">technical appendix</a>.</h3>
+      <!-- <h3>Draft <a href="https://dbp.io/pubs/2017/funtal.pdf">paper</a> and <a href="https://dbp.io/pubs/2017/funtal-tr.pdf">technical appendix</a>.</h3> -->
 
-      <p>We present FunTAL, the first multi-language system to
-         formalize safe interoperability between a high-level
-         functional language and low-level assembly code while
-         supporting compositional reasoning about the mix. A central
-         challenge in developing such a multi-language is how to
-         bridge the gap between assembly, which is staged into calls
-         to continuations, and high-level code, where subterms return
-         a result. We present a compositional stack-based typed
-         assembly language that supports components, comprised of one
-         or more basic blocks, that may be embedded in high-level
-         contexts. We also present a logical relation for FunTAL that
-         supports reasoning about equivalence of high-level components
-         and their assembly replacements, mixed-language programs with
-         callbacks between languages, and assembly components
-         comprised of different numbers of basic blocks.</p>
+      <p>TODO: description of paper</p>
 
       <hr/>
 
-      <h2>Artifact: a FunTAL type checker and small-step machine.</h2>
-      <h3>Daniel Patterson and Gabriel Scherer.</h3>
-      <h4>Source code and build instructions: <a href="https://github.com/dbp/funtal">github.com/dbp/funtal</a></h4>
+      <h2>Artifact: a LambdaB type checker and small-step machine.</h2>
+      <h3>Dustin Jamner</h3>
+      <h4>Source code and build instructions: <a href="https://github.com/dijamner/paramblame-artifact">github.com/dijamner/paramblame-artifact</a></h4>
 
       <p>
-        We present a type checker and stepper for the FunTAL machine
+        TODO: description of artifact
+        <!-- We present a type checker and stepper for the FunTAL machine
           semantics. We include <strong>well-typed, runnable examples
           from
           the <a href="https://dbp.io/pubs/2017/funtal.pdf">paper</a></strong>,
@@ -56,7 +43,7 @@
         TAL component <code>C</code>
         can be embedded as <code>FT[t,?]C</code> where <code>t</code> is
         the return type, as we see in examples below. We do this so
-        that all programs run through the stepper have a return value.
+        that all programs run through the stepper have a return value. -->
       </p>
 
       <p><strong>Note:</strong> there are some syntactic differences
@@ -72,10 +59,7 @@
         <strong>Examples from <a href="https://dbp.io/pubs/2017/funtal.pdf">paper</a>:</strong>
       </p>
       <ul>
-        <li><a href="#" id="call_to_call">Call to call</a> (Fig. 3 &amp; 4, pg. 6)</li>
-        <li><a href="#" id="higher_order">JIT</a> (Fig. 11 &amp; 12, pg. 10)</li>
-        <li><a href="#" id="blocks_1">Blocks 1</a> (Fig. 16, top, pg. 12)</li>
-        <li><a href="#" id="blocks_2">Blocks 2</a> (Fig. 16, bottom, pg. 12)</li>
+        <li><a href="#" id="call_to_call">TODO: examples</a> (Fig. 3 &amp; 4, pg. 6)</li>
         <li><a href="#" id="factorial_f">Factorial (functional)</a> (Fig. 17, top, pg. 13)</li>
         <li><a href="#" id="factorial_t">Factorial (imperative)</a> (Fig. 17, bottom, pg. 13)</li> 
       </ul>
