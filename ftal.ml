@@ -2804,6 +2804,7 @@ end = struct
     match t with
     | VarTy s -> !^s
     | IntTy -> !^"int"
+    | BoolTy -> !^"bool"
     | FunTy (t1,t2) -> nest 2 (parens (p_ty t1 ^^ !^" -> " ^^ p_ty t2))
     | AnyTy -> !^"*"
     (* | TTuple ts -> nest 2 (langle ^^ group (separate_map (comma ^^ break 1) p_ty ts) ^^ rangle) TODO: pairs *)
@@ -2817,6 +2818,7 @@ end = struct
     | IntExp n -> !^(string_of_int n)
     | PairExp (e1,e2) -> langle ^^ (p_exp e1) ^^ comma ^^ break 1 ^^ (p_exp e2) ^^ rangle
     (* | EPi(_,n,e) -> !^"pi" ^^ space ^^ !^(string_of_int n) ^^ lparen ^^ p_exp e ^^ rparen TODO *)
+    | BlameExp (_, t) -> !^"blame" ^^ break 1 ^^ colon ^^ space ^^ p_ty t
     | e -> group (lparen ^^ p_exp e ^^ rparen)
 
   and p_app_exp = function

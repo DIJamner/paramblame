@@ -105,10 +105,9 @@ let _ =
   in
   let next' _ =
     let ((e,s), rest) = !hist in
-    let Some(ns,ne) = Ftal.Lang.step (s (* TODO: store *), e) in (* TODO: pattern matching *)
-    if e = ne (* TODO: equality (check all) | add check for store equality*)
-    then ()
-    else hist := ((ne,ns), (e,s)::rest)
+    match Ftal.Lang.step (s (* TODO: store *), e) with
+      | Some(ns,ne) -> hist := ((ne,ns), (e,s)::rest)(* TODO: equality (check all)*)
+      | None -> ()
   in
   let load _ =
     let open H in
@@ -118,12 +117,14 @@ let _ =
           try
             match parse_report_loc Parse.expression_eof s with
             | `Success e -> begin
-                let Some _ =  Lang.expType [] [] [] e in (* TODO: check None/move to type err *) (* TODO: context for expType (used defaultContext)*)
-                hist := ((e, []), []);
-                refresh ();
-                clear_errors ();
-                show_machine ();
-                Js.Opt.return Js._false
+                match Lang.expType [] [] [] e with (* TODO: check None/move to type err *) (* TODO: context for expType (used defaultContext)*)
+                  | Some _ ->
+                    hist := ((e, []), []);
+                    refresh ();
+                    clear_errors ();
+                    show_machine ();
+                    Js.Opt.return Js._false
+                | None -> raise (TypeError ("Failed to typecheck", -1, -1)) (* TODO: better messages/remove error *)
               end
             | `Error (line, msg) ->
               begin

@@ -1,5 +1,5 @@
 %token PLUS MINUS TIMES /* these are the binary symbols */
-%token FORALL EXISTS MU CROSS
+%token FORALL EXISTS MU CROSS BLAME
 %token UNIT INT BOOL
 %token LANGLE RANGLE LBRACKET RBRACKET LBRACE RBRACE LPAREN RPAREN
 %token DOT COMMA COLON SEMICOLON DOUBLECOLON ARROW QUESTION CAST
@@ -53,6 +53,8 @@ simple_expression:
 | n=nat { IntExp n }
 | LBRACE e1=expression COMMA e2=expression RBRACE { PairExp (e1,e2) }
 /*| PI n=nat LPAREN e=f_expression RPAREN { F.EPi (cpos $startpos, n, e) } TODO */
+/*TODO: add code positions */
+| BLAME COLON t=typ {BlameExp (PosCompLbl (CodeLoc(-1,-1)), t)}
 | LPAREN e=expression RPAREN { e }
 
 app_expression:

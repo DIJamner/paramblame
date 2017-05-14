@@ -24,6 +24,7 @@ rule token = parse
   | blank+ { token lexbuf }
   | int_literal { INTEGER (int_of_string (Lexing.lexeme lexbuf)) }
   | "int" { INT }
+  | "bool" { BOOL }
   | "." { DOT }
   | "<" { LANGLE }
   | "," { COMMA }
@@ -49,6 +50,7 @@ rule token = parse
   | "->" { ARROW }
   | "?" { QUESTION }
   | "=>" { CAST }
+  | "blame" { BLAME }
   | identifier { classify_identifier (Lexing.lexeme lexbuf) }
   | eof { EOF }
   | _ { lexing_error lexbuf }
