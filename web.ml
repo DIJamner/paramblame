@@ -78,8 +78,6 @@ let set_click i h =
   H.((getElementById i)##.onclick := h);
   ()
 
-exception TypeError of string * int * int (* TODO: put in the right place *)
-
 let _ =
   let hist = ref ((Ftal.Lang.IntExp 0 (* TODO: correct elem here? *), []), []) in 
   let refresh _ =
@@ -124,14 +122,14 @@ let _ =
                     clear_errors ();
                     show_machine ();
                     Js.Opt.return Js._false
-                | None -> raise (TypeError ("Failed to typecheck", -1, -1)) (* TODO: better messages/remove error *)
+                | None -> raise (FTAL.TypeError ("Failed to typecheck", -1, -1)) (* TODO: better messages/remove error *)
               end
             | `Error (line, msg) ->
               begin
                 set_error line msg;
                 Js.Opt.return Js._false
               end
-          with TypeError (t,l,c) ->
+          with FTAL.TypeError (t,l,c) ->
             begin
               set_error l ("Type Error: " ^ t);
               hide_machine ();
