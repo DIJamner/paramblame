@@ -78,22 +78,25 @@ let set_click i h =
   H.((getElementById i)##.onclick := h);
   ()
 
+exception TypeError of string * int * int (* TODO: put in the right place *)
+
 let _ =
-  let hist = ref ((Ftal.F.EUnit Ftal.dummy_loc, ([],[],[])), []) in
+  let hist = ref ((Ftal.Lang.IntExp 0 (* TODO: correct elem here? *), []), []) in 
   let refresh _ =
-    let ((e, (h,r,s)), past) = !hist in
-    let _ = match Ftal.F.decomp e with
-      | None ->
+    let ((e, s), past) = !hist in
+    let _ = match Ftal.Lang.isValue e with
+      | true ->
         H.((getElementById "next")##setAttribute (Js.string "disabled") (Js.string "on"));
         H.((getElementById "many")##setAttribute (Js.string "disabled") (Js.string "on"));
-        let _ = set_text "context" (Ftal.F.show_exp e) in
+        let _ = set_text "context" (Ftal.LangPrinter.show_exp e) in
         let _ = set_text "focus" "" in
         ()
-      | Some (c, f) ->
+      | false ->
+        let (f, c) = Ftal.Lang.decompose e in
         H.((getElementById "next")##removeAttribute (Js.string "disabled"));
         H.((getElementById "many")##removeAttribute (Js.string "disabled"));
-        let _ = set_text "context" (Ftal.F.show_context c) in
-        let _ = set_text "focus" (Ftal.F.show_ft f) in
+        let _ = set_text "context" (Ftal.LangPrinter.show_ctx c) in
+        let _ = set_text "focus" (Ftal.LangPrinter.show_exp f) in
         ()
     in
     let _ = set_text "pc" (string_of_int (List.length past)) in
@@ -101,22 +104,22 @@ let _ =
     ()
   in
   let next' _ =
-    let ((e,m), rest) = !hist in
-    let (nm,ne) = Ftal.F.step (m, e) in
-    if e = ne && m = nm
+    let ((e,s), rest) = !hist in
+    let Some(ns,ne) = Ftal.Lang.step (s (* TODO: store *), e) in (* TODO: pattern matching *)
+    if e = ne (* TODO: equality (check all) | add check for store equality*)
     then ()
-    else hist := ((ne,nm), (e,m)::rest)
+    else hist := ((ne,ns), (e,s)::rest)
   in
   let load _ =
     let open H in
     let _ =
       let s = Js.to_string (get_editor ()) in
-      Ftal.(FTAL.(
+      Ftal.(
           try
-            match parse_report_loc Parse.f_expression_eof s with
+            match parse_report_loc Parse.expression_eof s with
             | `Success e -> begin
-                let _ = tc default_context (FC e) in
-                hist := ((e, ([],[],[])), []);
+                let Some _ =  Lang.expType [] [] [] e in (* TODO: check None/move to type err *) (* TODO: context for expType (used defaultContext)*)
+                hist := ((e, []), []);
                 refresh ();
                 clear_errors ();
                 show_machine ();
@@ -127,13 +130,13 @@ let _ =
                 set_error line msg;
                 Js.Opt.return Js._false
               end
-          with TypeError (t,l) ->
+          with TypeError (t,l,c) ->
             begin
-              set_error l.line ("Type Error: " ^ t);
+              set_error l ("Type Error: " ^ t);
               hide_machine ();
               Js.Opt.return Js._false
             end
-        )) in Js._false
+        ) in Js._false
   in
   let next _ =
     next' ();

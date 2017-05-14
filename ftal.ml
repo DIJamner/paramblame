@@ -2789,6 +2789,7 @@ module LangPrinter : sig
   val p_ctx : Lang.evalctx -> document
   
   val show_exp : Lang.exp -> string
+  val show_ctx : Lang.evalctx -> string
 
 end = struct
   open PPrint
@@ -2865,5 +2866,6 @@ end = struct
     )
 
   let show_exp e = (r (p_exp e))
+  let show_ctx c = (r (p_ctx c))
 
 end
