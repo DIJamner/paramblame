@@ -41,6 +41,12 @@ let assert_eint e n =
   | _ -> assert_failure "not equal"
 
 
+  (* TODO: rename *)
+let lang_assert_eint e n =
+  match e with
+  | Lang.IntExp x -> assert_equal x n
+  | _ -> assert_failure "not equal"
+
 let test1 _ = assert_eint
     (snd (F.stepn 10 (empty, f_expr "1 + 1")))
     2
@@ -57,8 +63,8 @@ let test_f_app _ =
     2
 
 let test_factorial_f _ =
-  assert_eint
-    (snd (F.stepn 300 (empty, F.EApp (dummy_loc, factorial_f, [F.EInt (dummy_loc, 3)]))))
+  lang_assert_eint
+    (snd (Lang.stepn 300 ([], Lang.(AppExp (Examples.factorial_f, IntExp 3)))))
     6
 
 
@@ -69,18 +75,16 @@ let assert_raises_typeerror (f : unit -> 'a) : unit =
 
 let test_factorial_f_ty _ =
   assert_equal
-    (FTAL.tc
-       FTAL.default_context
-       (FTAL.FC factorial_f))
-    (FTAL.FT (F.TArrow ([F.TInt], F.TInt)), TAL.SConcrete [])
+    (Lang.expType [] [] [] factorial_f)
+    (Some Lang.(FunTy (IntTy, IntTy)))
 
 
 let test_examples _ =
-  let assert_roundtrip_f fexpr =
-    let reparsed = Parse.parse_string Parse.f_expression_eof (Ftal.F.show_exp fexpr) in
-    let rereparsed = Parse.parse_string Parse.f_expression_eof (Ftal.F.show_exp reparsed) in
+  let assert_roundtrip expr =
+    let reparsed = Parse.parse_string Parse.expression_eof (Ftal.LangPrinter.show_exp expr) in
+    let rereparsed = Parse.parse_string Parse.expression_eof (Ftal.LangPrinter.show_exp reparsed) in
     assert_equal reparsed rereparsed in
-  assert_roundtrip_f Examples.factorial_f;
+  assert_roundtrip Examples.factorial_f;
   ()
 
 let suite = "FTAL evaluations" >:::

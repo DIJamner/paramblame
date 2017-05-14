@@ -1,7 +1,7 @@
 %token PACK AS UNPACK FOLD UNFOLD
 %token PLUS MINUS TIMES /* these are the binary symbols */
-%token FORALL EXISTS MU
-%token UNIT INT
+%token FORALL EXISTS MU CROSS
+%token UNIT INT BOOL
 %token LANGLE RANGLE LBRACKET RBRACKET LBRACE RBRACE LPAREN RPAREN
 %token DOT COMMA COLON SEMICOLON DOUBLECOLON ARROW QUESTION CAST
 %token LAMBDA IF0 PI
@@ -17,8 +17,10 @@
 %start<Ftal.F.t> f_type_eof
 */
 %start<Ftal.F.exp> f_expression_eof
+%start<Ftal.Lang.exp> expression_eof
 
 %{ open Ftal
+  open Lang
 %}
 
 
@@ -35,9 +37,19 @@ f_type_eof: tau=f_type EOF { tau }
 */
 f_expression_eof: e=f_expression EOF { e }
 
+expression_eof: e=expression EOF { e }
+
 conv_lbl:
-| PLUS a=type_name { () }
-| MINUS a=type_name { () }
+| PLUS a=type_name { PosConvLbl a }
+| MINUS a=type_name { NegConvLbl a }
+
+typ:
+| alpha=type_variable { VarTy alpha }
+| INT { IntTy }
+| BOOL { BoolTy }
+| t1=typ ARROW t2=typ { FunTy (t1, t2) }
+/*| taus=tuple(f_type) { F.TTuple taus } TODO: pairs */
+| TIMES { AnyTy }
 
 f_type:
 | alpha=f_type_variable { F.TVar alpha }
@@ -52,6 +64,13 @@ f_type:
   f_type_variable: alpha=identifier { alpha }
   f_mu_type: MU alpha=f_type_variable DOT tau=f_type { (alpha, tau) }
 
+simple_expression:
+| x=term_variable { VarExp x }
+| n=nat { IntExp n }
+| LBRACE e1=expression COMMA e2=expression RBRACE { PairExp (e1,e2) }
+/*| PI n=nat LPAREN e=f_expression RPAREN { F.EPi (cpos $startpos, n, e) } TODO */
+| LPAREN e=expression RPAREN { e }
+
 f_simple_expression:
 | x=f_term_variable { F.EVar (cpos $startpos, x) }
 | LPAREN RPAREN { F.EUnit (cpos $startpos)}
@@ -59,17 +78,38 @@ f_simple_expression:
 | es=tuple(f_expression) { F.ETuple (cpos $startpos, es) }
 | PI n=nat LPAREN e=f_expression RPAREN { F.EPi (cpos $startpos, n, e) }
 | LPAREN e=f_expression RPAREN { e }
-| LPAREN e=f_expression COLON t1=f_type a=conv_lbl CAST t2 = f_type RPAREN { e }
-| LPAREN e=f_expression COLON t1=f_type CAST t2 = f_type RPAREN { e }
+
+app_expression:
+| e=simple_expression { e }
+| e=simple_expression args=simple_expression { AppExp (e, args) }
 
 f_app_expression:
 | e=f_simple_expression { e }
 | e=f_simple_expression args=nonempty_list(f_simple_expression) { F.EApp (cpos $startpos, e, args) }
 
+arith_expression:
+| MINUS n=nat { IntExp (-n) }
+| e1=arith_expression op=infixop e2=arith_expression { OpExp (op, e1, e2) }
+| e=app_expression { e }
+
 f_arith_expression:
 | MINUS n=nat { F.EInt (cpos $startpos,(-n)) }
-| e1=f_arith_expression op=infixop e2=f_arith_expression { F.EBinop (cpos $startpos, e1, op, e2) }
+| e1=f_arith_expression op=f_infixop e2=f_arith_expression { F.EBinop (cpos $startpos, e1, op, e2) }
 | e=f_app_expression { e }
+
+cast_expression:
+| e=cast_expression COLON t1=typ a=conv_lbl CAST t2=typ
+  { ConvExp (e, t1, a, t2) }
+| e=cast_expression COLON t1=typ CAST t2=typ
+  { CastExp (e, t1, PosCompLbl (CodeLoc (-1,-1)), t2) (* TODO: label *) }
+| e=arith_expression { e }
+
+expression:
+| IF0 p=simple_expression e1=simple_expression e2=simple_expression
+  { IfExp (p, e1, e2) }
+| LAMBDA LPAREN x=term_variable COLON t=typ RPAREN DOT body=expression
+  { LamExp (x, t, body) }
+| e=cast_expression { e }
 
 f_expression:
 | IF0 p=f_simple_expression e1=f_simple_expression e2=f_simple_expression
@@ -81,17 +121,22 @@ f_expression:
 | UNFOLD e=f_expression { F.EUnfold (cpos $startpos, e) }
 | e=f_arith_expression { e }
 
+  term_variable: x=identifier { x }
   f_term_variable: x=identifier { x }
 
   f_telescope:
   | LPAREN args=separated_list(COMMA, decl(f_term_variable, f_type)) RPAREN
   { args }
 
-  %inline infixop:
+  %inline f_infixop:
   | PLUS { F.BPlus }
   | MINUS { F.BMinus }
   | TIMES { F.BTimes }
 
+  %inline infixop:
+  | PLUS { Plus }
+  | MINUS { Minus }
+  | TIMES { Times }
 
 /*type_env: li=bracketed(simple_type_env) { li }
 simple_type_env: li=separated_list(COMMA, type_env_elem) { li }

@@ -1,13 +1,11 @@
 open Ftal;;
+          
+let factorial_f = Parse.parse_string Parse.expression_eof {|
+lam (x : int). x
+|} 
 
-
-(* Factorial Two Ways *)
-
-let factorial_f = Parse.parse_string Parse.f_expression_eof {|
-  lam (x2:int).
-    (lam (fact : (mu a.(a, int) -> int, int) -> int).
-       fact (fold (mu b.(b, int) -> int) fact) x2)
-      (lam (f:mu a.(a, int) -> int, x1:int).
-          if0 x1 1 (x1*((unfold f) f (x1-1))))
-|}
-
+(* lam (x2:int).
+  (lam (fact : (( *, int) -> int, int) -> int).
+     fact (fact : (( *, int) -> int, int) -> int => * ) x2)
+    (lam (f: *, x1:int).
+        if0 x1 1 (x1 * (f : * => (( *, int) -> int, int) -> int) f (x1-1)))) *)

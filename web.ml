@@ -48,7 +48,7 @@ let omega = {|
 ((lam(f : * -> *).(f (f : * -> * => * ))) : ( * -> * ) -> * => * -> * )
 |}
 
-let factorial_f = Ftal.(F.show_exp (F.EApp (dummy_loc, Examples.factorial_f, [F.EInt (dummy_loc, 3)])))
+let factorial_f = Ftal.Lang.(Ftal.LangPrinter.show_exp (AppExp (Examples.factorial_f, IntExp 3)))
 
 let set_error ln m =
   let _ = Js.Unsafe.((coerce global)##seterror (Js.number_of_float (float_of_int ln)) (Js.string m)) in
