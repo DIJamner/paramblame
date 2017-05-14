@@ -1,7 +1,7 @@
 open OUnit2;;
 open Ftal;;
 open Examples;;
-let f_expr str = Parse.parse_string Parse.f_expression_eof str
+let expr str = Parse.parse_string Parse.expression_eof str
 
 let roundtrip ?source comp =
   let orig, roundtrip =
@@ -17,7 +17,7 @@ let roundtrip ?source comp =
         close_out chan;
   in
   let write_result () =
-    let doc = FP.p_exp comp in
+    let doc = LangPrinter.p_exp comp in
     let chan = open_out roundtrip in
     PPrintEngine.ToChannel.pretty 0.8 80 chan doc;
     flush chan;
@@ -25,7 +25,7 @@ let roundtrip ?source comp =
   in
   write_source ();
   write_result ();
-  match Parse.parse_file Parse.f_expression_eof roundtrip with
+  match Parse.parse_file Parse.expression_eof roundtrip with
   | exception exn ->
     Printf.eprintf "%!\nRountrip failure %S %S%!\n" orig roundtrip;
     comp
@@ -37,7 +37,7 @@ let empty = ([],[],[])
 
 let assert_eint e n =
   match e with
-  | F.EInt (_, x) -> assert_equal x n
+  | Lang.IntExp x -> assert_equal x n
   | _ -> assert_failure "not equal"
 
 
@@ -48,18 +48,16 @@ let lang_assert_eint e n =
   | _ -> assert_failure "not equal"
 
 let test1 _ = assert_eint
-    (snd (F.stepn 10 (empty, f_expr "1 + 1")))
+    (snd (Lang.stepn 10 ([], expr "1 + 1")))
     2
 
 let test1_ty _ = assert_equal
-    (FTAL.tc
-       FTAL.default_context
-       (FTAL.FC (f_expr "1 + 1")))
-    (FTAL.FT F.TInt, TAL.SConcrete []);;
+    (Lang.expType [] [] [] (expr "1 + 1"))
+    (Some Lang.IntTy);;
 
-let test_f_app _ =
+let test_app _ =
   assert_eint
-    (snd (F.stepn 10 (empty, f_expr "(lam (x:int). x + x) 1")))
+    (snd (Lang.stepn 10 ([], expr "(lam (x:int). x + x) 1")))
     2
 
 let test_factorial_f _ =
@@ -91,7 +89,7 @@ let suite = "FTAL evaluations" >:::
             [
               "F: 1 + 1 = 2" >:: test1;
               "F: 1 + 1 : int" >:: test1_ty;
-              "F: (lam x. x + x) 1 = 2" >:: test_f_app;
+              "F: (lam x. x + x) 1 = 2" >:: test_app;
               (* "parse (5)" >:: test_parse5; TODO: should be removed? *)
               "F: fact 3 = 6" >:: test_factorial_f;
               "F: fact : int -> int" >:: test_factorial_f_ty;

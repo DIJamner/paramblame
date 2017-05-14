@@ -23,7 +23,6 @@ rule token = parse
   | newline { Lexing.new_line lexbuf; token lexbuf }
   | blank+ { token lexbuf }
   | int_literal { INTEGER (int_of_string (Lexing.lexeme lexbuf)) }
-  | "unit" { UNIT }
   | "int" { INT }
   | "." { DOT }
   | "<" { LANGLE }
@@ -31,9 +30,6 @@ rule token = parse
   | ">" { RANGLE }
   | "(" { LPAREN }
   | ")" { RPAREN }
-  | "pack "{ PACK }
-  | "as" { AS }
-  | "fold" { FOLD }
   | "[" { LBRACKET }
   | "]" { RBRACKET }
   | "{" { LBRACE }

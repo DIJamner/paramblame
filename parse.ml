@@ -62,8 +62,6 @@ let report_error lexbuf = function
 (** Parsing functions *)
 
 let expression_eof = Parser.Incremental.expression_eof
-let f_expression_eof = Parser.Incremental.f_expression_eof
-let component_eof = Parser.Incremental.f_expression_eof
 
 let parse parse_fun lexbuf =
   (* see the Menhir manual for the description of
