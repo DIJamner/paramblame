@@ -47,24 +47,34 @@ let lang_assert_eint e n =
   | Lang.IntExp x -> assert_equal x n
   | _ -> assert_failure "not equal"
 
-let test1 _ = assert_eint
-    (snd (Lang.stepn 10 ([], expr "1 + 1")))
-    2
+let check_and_run p r =
+   assert_equal (Lang.expType [] [] [] p) (Ok Lang.IntTy);
+   lang_assert_eint (snd (Lang.run ([], p))) r
 
-let test1_ty _ = assert_equal
-    (Lang.expType [] [] [] (expr "1 + 1"))
-    (Ok Lang.IntTy);;
+let test1 _ =
+    check_and_run (expr "1 + 1") 2
 
 let test_app _ =
-  assert_eint
-    (snd (Lang.stepn 10 ([], expr "(lam (x:int). x + x) 1")))
-    2
+    check_and_run (expr "(lam (x:int). x + x) 1") 2
 
 let test_factorial_f _ =
   lang_assert_eint
-    (snd (Lang.stepn 300 ([], Lang.(AppExp (Examples.factorial_f, IntExp 3)))))
+    (snd (Lang.run ([], Lang.(AppExp (Examples.factorial_f, IntExp 3)))))
     6
 
+let test_let _ =
+  assert_eint
+    (snd (Lang.run ([], expr "let x : int = 3 in 2 + x")))
+    5
+
+let test_equal_true _ =
+  check_and_run (expr "if (2 = 2) then 0 else 1") 0
+
+let test_equal_false _ =
+  check_and_run (expr "if (1 = 2) then 0 else 1") 1
+
+let test_paper1 _ =
+  check_and_run (expr " let p : <int,<int->int,int->bool>> = <0, <lam (x : int). 1 - x, lam (x : int). x = 0> > in (pi1 (pi2 p)) (pi1 p)") 1
 
 let assert_raises_typeerror (f : unit -> 'a) : unit =
   FTAL.(try (f (); assert_failure "didn't raise an exception")
@@ -87,12 +97,15 @@ let test_examples _ =
 
 let suite = "FTAL evaluations" >:::
             [
-              "F: 1 + 1 = 2" >:: test1;
-              "F: 1 + 1 : int" >:: test1_ty;
+              "F: 1 + 1 = 2 : int" >:: test1;
               "F: (lam x. x + x) 1 = 2" >:: test_app;
               (* "parse (5)" >:: test_parse5; TODO: should be removed? *)
-              "F: fact 3 = 6" >:: test_factorial_f;
-              "F: fact : int -> int" >:: test_factorial_f_ty;
+              (*"F: fact 3 = 6" >:: test_factorial_f;*)
+	      "F: fact : int -> int" >:: test_factorial_f_ty;
+	      "F: let x : int = 3 in 2 + x" >:: test_let;
+	      "F: 2 = 2" >:: test_equal_true;
+              "F: 1 = 2" >:: test_equal_false;
+              "F: paper #1" >:: test_paper1;
               "Example roundtrips" >:: test_examples;
             ]
 
