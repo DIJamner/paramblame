@@ -112,27 +112,25 @@ let _ =
     let _ =
       let s = Js.to_string (get_editor ()) in
       Ftal.(
-          try
-            match parse_report_loc Parse.expression_eof s with
-            | `Success e -> begin
-                match Lang.expType [] [] [] e with (* TODO: check None/move to type err *) (* TODO: context for expType (used defaultContext)*)
-                  | Ok _ ->
-                    hist := ((e, []), []);
-                    refresh ();
-                    clear_errors ();
-                    show_machine ();
-                    Js.Opt.return Js._false
-                | Error s -> raise (FTAL.TypeError (Ftal.Lang.r s, -1, -1)) (* TODO: simplify error handling *)
-              end
-            | `Error (line, msg) ->
-              begin
-                set_error line msg;
-                Js.Opt.return Js._false
-              end
-          with FTAL.TypeError (t,l,c) ->
+        match parse_report_loc Parse.expression_eof s with
+          | `Success e -> begin
+              match Lang.expType [] [] [] e with (* TODO: check None/move to type err *) (* TODO: context for expType (used defaultContext)*)
+                | Ok _ ->
+                  hist := ((e, []), []);
+                  refresh ();
+                  clear_errors ();
+                  show_machine ();
+                  Js.Opt.return Js._false
+              | Error s -> 
+                begin
+                  set_error 0 ("Type Error: " ^ Ftal.Lang.r s); (* TODO: replace 0 w/ meaningful value *)
+                  hide_machine ();
+                  Js.Opt.return Js._false
+                end
+            end
+          | `Error (line, msg) ->
             begin
-              set_error l ("Type Error: " ^ t);
-              hide_machine ();
+              set_error line msg;
               Js.Opt.return Js._false
             end
         ) in Js._false
