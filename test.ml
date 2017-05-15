@@ -74,7 +74,20 @@ let test_equal_false _ =
   check_and_run (expr "if (1 = 2) then 0 else 1") 1
 
 let test_paper1 _ =
-  check_and_run (expr " let p : <int,<int->int,int->bool>> = <0, <lam (x : int). 1 - x, lam (x : int). x = 0> > in (pi1 (pi2 p)) (pi1 p)") 1
+  check_and_run (expr "let p : <int,<int->int,int->bool>> = <0, <lam (x : int). 1 - x, lam (x : int). x = 0> > in (pi1 (pi2 p)) (pi1 p)") 1
+
+let test_paper2 _ =
+  check_and_run (expr "pi2 ((Lam X. Lam Y. lam (p : <X,Y>). < pi2 p, pi1 p >) [int] [bool] <1, true>)") 1
+
+let test_paper3 _ =
+  check_and_run (expr "pi1 ((Lam X. Lam Y. lam (p : <X,Y>). < pi2 p, pi1 p >) [bool] [int] <true, 1>)") 1
+
+let test_paper4 _ =
+  check_and_run (expr {|
+    let inc : * = (lam (x : *). (x : * => int) + 1 : int => *) : *->* => * in
+    let once : * = (lam (f : *). (lam (x : *). (f : * => *->*) x) : *->* => *) : *->* => * in
+    ((((once : * => *->*) inc) : * => *->*) (0 : int => *)) : * => int
+    |}) 1
 
 let assert_raises_typeerror (f : unit -> 'a) : unit =
   FTAL.(try (f (); assert_failure "didn't raise an exception")
@@ -106,6 +119,9 @@ let suite = "FTAL evaluations" >:::
 	      "F: 2 = 2" >:: test_equal_true;
               "F: 1 = 2" >:: test_equal_false;
               "F: paper #1" >:: test_paper1;
+              "F: paper #2" >:: test_paper2;
+              "F: paper #3" >:: test_paper3;
+              "F: paper #4" >:: test_paper4;
               "Example roundtrips" >:: test_examples;
             ]
 
