@@ -41,6 +41,8 @@ rule token = parse
   | "true" { TRUE }
   | "false" { FALSE }
   | "if" { IF }
+  | "then" { THEN }
+  | "else" { ELSE }
   | "pi1" { PI1 }
   | "pi2" { PI2 }
   | "+" { PLUS }

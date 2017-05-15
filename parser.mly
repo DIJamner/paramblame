@@ -3,7 +3,7 @@
 %token INT BOOL
 %token LANGLE RANGLE LBRACKET RBRACKET LBRACE RBRACE LPAREN RPAREN
 %token DOT COMMA COLON ARROW CAST
-%token LAMBDA BIGLAMBDA IF PI1 PI2
+%token LAMBDA BIGLAMBDA IF THEN ELSE PI1 PI2
 %token<string> A_IDENTIFIER OTHER_IDENTIFIER CAP_IDENTIFIER
 %token TRUE FALSE
 %token<int> INTEGER
@@ -84,7 +84,7 @@ cast_expression:
 | e=arith_expression { e }
 
 expression:
-| IF p=simple_expression e1=simple_expression e2=simple_expression
+| IF p=simple_expression THEN e1=simple_expression ELSE e2=simple_expression
   { IfExp (p, e1, e2) }
 | LAMBDA LPAREN x=term_variable COLON t=typ RPAREN DOT body=expression
   { LamExp (x, t, body) }
