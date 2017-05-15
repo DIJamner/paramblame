@@ -52,7 +52,7 @@ module Lang = struct
     | NameTy _ -> true
     | _ -> false 
 
-  type op = Plus | Minus | Times
+  type op = Plus | Minus | Times | Equal
 
   type exp = IntExp of int 
             | BoolExp of bool 
@@ -150,6 +150,7 @@ module Lang = struct
   and p_sum_exp = function
     | OpExp ((Plus as op), e1, e2) -> p_sum_exp e1 ^^ p_binop op ^^ p_sum_exp e2
     | OpExp ((Minus as op), e1, e2) -> p_sum_exp e1 ^^ p_binop op ^^ p_mul_exp e2
+    | OpExp ((Equal as op), e1, e2) -> p_sum_exp e1 ^^ p_binop op ^^ p_mul_exp e2
     | e -> p_mul_exp e
 
   and p_arith_exp e = p_sum_exp e
@@ -177,6 +178,7 @@ module Lang = struct
   and p_binop (b : op) : document =
     match b with
     | Plus -> !^"+"
+    | Equal -> !^"="
     | Minus -> !^"-"
     | Times -> !^"*"
 
@@ -433,11 +435,12 @@ module Lang = struct
         | Error s -> Error s)
     | IntExp _ -> if envWf s te env then Ok IntTy 
       else Error (!^"Environment for expression" ^/^ p_exp e ^/^ !^"was malformed") (* TODO: get err from env*)
-    | OpExp (_, e, e') -> 
-      (match (expWf s te env e IntTy, expWf s te env e' IntTy) with
-        | (Ok (), Ok ()) -> Ok IntTy
-        | (Error s, _) -> Error s
-        | (_, Error s) -> Error s)
+    | OpExp (opr, e, e') -> 
+      (match (opr, expWf s te env e IntTy, expWf s te env e' IntTy) with
+        | (Equal, Ok (), Ok ()) -> Ok BoolTy
+        | (_, Ok (), Ok ()) -> Ok IntTy
+        | (_, Error s, _) -> Error s
+        | (_, _, Error s) -> Error s)
     | VarExp x -> (match envLookup env x with
       | Some a -> if envWf s te env then Ok a 
         else Error (!^"Environment for expression" ^/^ p_exp e ^/^ !^"was malformed") (* TODO: get err from env*)
@@ -558,6 +561,7 @@ module Lang = struct
     | OpExp (Plus, IntExp i1, IntExp i2) -> Some (IntExp (i1 + i2))
     | OpExp (Minus, IntExp i1, IntExp i2) -> Some (IntExp (i1 - i2))
     | OpExp (Times, IntExp i1, IntExp i2) -> Some (IntExp (i1 * i2))
+    | OpExp (Equal, IntExp i1, IntExp i2) -> Some (BoolExp (i1 = i2))
     | IfExp (BoolExp true, e1, e2) -> Some e1
     | IfExp (BoolExp false, e1, e2) -> Some e2
     | AppExp (LamExp (x,a,b), v) -> Some (substExp b (SubstExpVar (v, x, true)))
@@ -650,12 +654,14 @@ module Lang = struct
   let rec stepn n (s,p) = 
     if n <= 0 then (s,p) else (match step (s,p) with
       | Some res -> stepn (n - 1) res
-      (* TODO: None? *))
+      | None -> (s,p))
   
   let rec run (s, p) = 
     (* TODO: check for a value before, make None an error *)
-    match step (s,p) with
-      | Some (s',p') -> run (s', p')
-      | None -> (s,p)
+    if isValue p then (s,p)
+    else
+      match step (s,p) with
+	| Some (s',p') -> run (s', p')
+	| None -> (s,p)
 
 end

@@ -1,14 +1,15 @@
-%token PLUS MINUS TIMES /* these are the binary symbols */
+%token PLUS MINUS TIMES EQUAL /* these are the binary symbols */
 %token FORALL CROSS BLAME
 %token INT BOOL
 %token LANGLE RANGLE LBRACKET RBRACKET LBRACE RBRACE LPAREN RPAREN
 %token DOT COMMA COLON ARROW CAST
-%token LAMBDA BIGLAMBDA IF THEN ELSE PI1 PI2
+%token LAMBDA BIGLAMBDA IF THEN ELSE LET IN PI1 PI2
 %token<string> A_IDENTIFIER OTHER_IDENTIFIER CAP_IDENTIFIER
 %token TRUE FALSE
 %token<int> INTEGER
 %token EOF
 
+%left EQUAL
 %left PLUS MINUS
 %left TIMES
 
@@ -88,6 +89,8 @@ expression:
   { IfExp (p, e1, e2) }
 | LAMBDA LPAREN x=term_variable COLON t=typ RPAREN DOT body=expression
   { LamExp (x, t, body) }
+| LET x=term_variable COLON t=typ EQUAL rhs=expression IN body=expression
+  { AppExp (LamExp (x, t, body), rhs) }
 | BIGLAMBDA x=identifier DOT body=expression { AbstrExp (x,body)}
 | e=cast_expression { e }
 
@@ -97,6 +100,7 @@ expression:
   | PLUS { Plus }
   | MINUS { Minus }
   | TIMES { Times }
+  | EQUAL { Equal }
 
 /*type_env: li=bracketed(simple_type_env) { li }
 simple_type_env: li=separated_list(COMMA, type_env_elem) { li }

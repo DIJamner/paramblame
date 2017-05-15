@@ -43,8 +43,11 @@ rule token = parse
   | "if" { IF }
   | "then" { THEN }
   | "else" { ELSE }
+  | "let" { LET }
+  | "in" { IN }
   | "pi1" { PI1 }
   | "pi2" { PI2 }
+  | "=" { EQUAL }
   | "+" { PLUS }
   | "-" { MINUS }
   | "*" { TIMES }
