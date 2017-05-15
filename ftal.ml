@@ -136,7 +136,7 @@ module Lang = struct
     | Proj1Exp e -> !^"pi1" ^^ space ^^ p_simple_exp e
     | Proj2Exp e -> !^"pi2" ^^ space ^^ p_simple_exp e
     | BlameExp (_, t) -> !^"blame" ^/^ colon ^^ space ^^ p_ty t
-    | e -> group (lparen ^^ p_exp e ^^ rparen)
+    | e -> group (parens (p_exp e))
 
   and p_app_exp = function
     | AppExp (e1, e2) -> p_simple_exp e1 ^/^ p_simple_exp e2
@@ -156,11 +156,11 @@ module Lang = struct
   and p_arith_exp e = p_sum_exp e
 
   and p_cast_exp = function
-    | ConvExp (e, t1, lbl, t2) -> p_cast_exp e ^/^ colon ^^ space
-      ^^ p_ty t1 ^/^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2
-    | CastExp (e, t1, lbl, t2) -> p_cast_exp e ^/^ colon ^^ space
-      ^^ p_ty t1 ^/^ !^"=>" ^^ space ^^ p_ty t2 (* TODO: lbl *)
-      | e -> p_arith_exp e
+    | ConvExp (e, t1, lbl, t2) -> p_cast_exp e ^/^ group (colon ^^ space
+      ^^ p_ty t1 ^/^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2)
+    | CastExp (e, t1, lbl, t2) -> p_cast_exp e ^/^ group (colon ^^ space
+      ^^ p_ty t1 ^/^ !^"=>" ^^ space ^^ p_ty t2) (* TODO: lbl *)
+    | e -> p_arith_exp e
 
   and p_exp (e : exp) : document =
     group @@ nest 2 (match e with
@@ -203,10 +203,10 @@ module Lang = struct
     | _ -> p_app_ctx c)
     
   and p_cast_ctx (c : evalctx) : document = match c with
-    | ConvCtx (c, t1, lbl, t2) -> p_cast_ctx c ^/^ colon ^^ space
-      ^^ p_ty t1 ^/^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2
-    | CastCtx (c, t1, lbl, t2) -> p_cast_ctx c ^/^ colon ^^ space
-      ^^ p_ty t1 ^/^ !^"=>" ^^ space ^^ p_ty t2 (* TODO: lbl *)
+    | ConvCtx (c, t1, lbl, t2) -> p_cast_ctx c ^/^ group (colon ^^ space
+      ^^ p_ty t1 ^/^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2)
+    | CastCtx (c, t1, lbl, t2) -> p_cast_ctx c ^/^ group (colon ^^ space
+      ^^ p_ty t1 ^/^ !^"=>" ^^ space ^^ p_ty t2) (* TODO: lbl *)
     | e -> p_arith_ctx e
   
   and p_ctx (c : evalctx) : document =
