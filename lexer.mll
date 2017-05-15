@@ -10,14 +10,13 @@ let lexing_error lexbuf =
 let classify_identifier ident =
   match ident.[0] with
   | 'a' -> A_IDENTIFIER ident
-  | _ -> OTHER_IDENTIFIER ident
+  | c -> if Char.compare c 'Z' > 0 then OTHER_IDENTIFIER ident else CAP_IDENTIFIER ident
 }
 
 let int_literal = ['0'-'9'] ['0'-'9']*
 let blank = [' ' '\t']+
 let newline = ('\r'* '\n')
 let identifier = ['a'-'z' 'A'-'Z' '_'] ['a'-'z' 'A'-'Z' '0'-'9' '_' '\'']*
-let register = ('r' ['1' - '7'] | "ra")
 
 rule token = parse
   | newline { Lexing.new_line lexbuf; token lexbuf }
@@ -37,18 +36,19 @@ rule token = parse
   | "}" { RBRACE }
   | "forall" { FORALL }
   | "{" { LBRACKET }
-  | ";" { SEMICOLON }
   | "}" { RBRACKET }
   | ":" { COLON }
-  | "::" { DOUBLECOLON }
-  | "if0" { IF0 }
-  | "pi" { PI }
+  | "true" { TRUE }
+  | "false" { FALSE }
+  | "if" { IF }
+  | "pi1" { PI1 }
+  | "pi2" { PI2 }
   | "+" { PLUS }
   | "-" { MINUS }
   | "*" { TIMES }
   | "lam"  { LAMBDA }
+  | "Lam"  { BIGLAMBDA }
   | "->" { ARROW }
-  | "?" { QUESTION }
   | "=>" { CAST }
   | "blame" { BLAME }
   | identifier { classify_identifier (Lexing.lexeme lexbuf) }

@@ -1,12 +1,12 @@
 %token PLUS MINUS TIMES /* these are the binary symbols */
-%token FORALL EXISTS MU CROSS BLAME
-%token UNIT INT BOOL
+%token FORALL CROSS BLAME
+%token INT BOOL
 %token LANGLE RANGLE LBRACKET RBRACKET LBRACE RBRACE LPAREN RPAREN
-%token DOT COMMA COLON SEMICOLON DOUBLECOLON ARROW QUESTION CAST
-%token LAMBDA IF0 PI
-%token<string> A_IDENTIFIER Z_IDENTIFIER E_IDENTIFIER OTHER_IDENTIFIER
+%token DOT COMMA COLON ARROW CAST
+%token LAMBDA BIGLAMBDA IF PI1 PI2
+%token<string> A_IDENTIFIER OTHER_IDENTIFIER CAP_IDENTIFIER
+%token TRUE FALSE
 %token<int> INTEGER
-%token<string> REGISTER
 %token EOF
 
 %left PLUS MINUS
@@ -40,26 +40,36 @@ conv_lbl:
 | PLUS a=type_name { PosConvLbl a }
 | MINUS a=type_name { NegConvLbl a }
 
-typ:
-| alpha=type_variable { VarTy alpha }
+simple_typ:
 | INT { IntTy }
 | BOOL { BoolTy }
-| t1=typ ARROW t2=typ { FunTy (t1, t2) }
-/*| taus=tuple(f_type) { F.TTuple taus } TODO: pairs */
 | TIMES { AnyTy }
+| x=type_variable { VarTy x }
+| LANGLE t1=typ COMMA t2=typ RANGLE { PairTy (t1,t2) }
+| LPAREN t=typ RPAREN { t }
+
+typ:
+/* TODO: enable removing parens where possible */
+| t1=simple_typ ARROW t2=typ { FunTy (t1, t2) }
+| FORALL x=identifier DOT t=typ { ForallTy (x, t) }
+| t=simple_typ { t }
 
 simple_expression:
 | x=term_variable { VarExp x }
 | n=nat { IntExp n }
+| b=TRUE { BoolExp true }
+| b=FALSE { BoolExp false }
 | LBRACE e1=expression COMMA e2=expression RBRACE { PairExp (e1,e2) }
-/*| PI n=nat LPAREN e=f_expression RPAREN { F.EPi (cpos $startpos, n, e) } TODO */
+| PI1 LPAREN e=expression RPAREN { Proj1Exp e }
+| PI2 LPAREN e=expression RPAREN { Proj2Exp e }
 /*TODO: add code positions */
-| BLAME COLON t=typ {BlameExp (PosCompLbl (CodeLoc(-1,-1)), t)}
+| BLAME COLON t=parened(typ) {BlameExp (PosCompLbl (CodeLoc(-1,-1)), t)}
 | LPAREN e=expression RPAREN { e }
 
 app_expression:
+| e=app_expression t=bracketed(typ) { InstExp(e,t) }
+| e=app_expression arg=simple_expression { AppExp (e, arg) }
 | e=simple_expression { e }
-| e=simple_expression args=simple_expression { AppExp (e, args) }
 
 arith_expression:
 | MINUS n=nat { IntExp (-n) }
@@ -74,10 +84,11 @@ cast_expression:
 | e=arith_expression { e }
 
 expression:
-| IF0 p=simple_expression e1=simple_expression e2=simple_expression
+| IF p=simple_expression e1=simple_expression e2=simple_expression
   { IfExp (p, e1, e2) }
 | LAMBDA LPAREN x=term_variable COLON t=typ RPAREN DOT body=expression
   { LamExp (x, t, body) }
+| BIGLAMBDA x=identifier DOT body=expression { AbstrExp (x,body)}
 | e=cast_expression { e }
 
   term_variable: x=identifier { x }
@@ -105,7 +116,7 @@ stack: ws=list(w=word_value DOUBLECOLON {w}) NIL { ws }
 */
 
 type_variable:
-| alpha=A_IDENTIFIER { alpha }
+| x=CAP_IDENTIFIER { x }
 
 type_name:
 | alpha=A_IDENTIFIER { alpha }
@@ -116,6 +127,7 @@ location:
 identifier:
 | id=A_IDENTIFIER { id }
 | id=OTHER_IDENTIFIER { id }
+| id=CAP_IDENTIFIER { id } /*TODO: temp*/
 
 nat:
 | n=INTEGER { n }
