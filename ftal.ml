@@ -181,35 +181,42 @@ module Lang = struct
     | Times -> !^"*"
 
 
-  let rec p_cast_ctx (c : evalctx) : document = match c with
+  let rec p_simple_ctx (c : evalctx) : document = nest 2 (match c with
+    | CtxHole -> !^"[.]"
+    | Proj1Ctx c -> !^"pi1" ^^ space ^^ p_ctx c
+    | Proj2Ctx c -> !^"pi2" ^^ space ^^ p_ctx c 
+    | PairCtx1 (c,e2) -> langle ^^ group (p_ctx c) ^^ comma ^/^ group (p_exp e2) ^^ rangle
+    | PairCtx2 (e1,c) -> langle ^^ group (p_exp e1) ^^ comma ^/^ group (p_ctx c) ^^ rangle
+    | _ -> parens (p_ctx c))
+    
+  and p_app_ctx (c : evalctx) : document = nest 2 (match c with
+    | AppCtx1 (c, e2) -> p_ctx c ^/^ group (p_exp e2)
+    | AppCtx2 (e1, c) -> p_exp e1 ^^ break 1 ^^ p_ctx c
+    | InstCtx (c,t) -> p_ctx c ^^ space ^^ brackets (p_ty t)
+    | _ -> p_simple_ctx c)
+    
+  and p_arith_ctx (c : evalctx) : document = nest 2 (match c with
+    | OpCtx1 (o,c,e) -> p_ctx c ^^ space ^^ p_binop o ^^ space ^^ p_exp e
+    | OpCtx2 (o,e,c) -> p_exp e ^^ space ^^ p_binop o ^^ space ^^ p_ctx c
+    | _ -> p_app_ctx c)
+    
+  and p_cast_ctx (c : evalctx) : document = match c with
     | ConvCtx (c, t1, lbl, t2) -> p_cast_ctx c ^/^ colon ^^ space
       ^^ p_ty t1 ^/^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2
     | CastCtx (c, t1, lbl, t2) -> p_cast_ctx c ^/^ colon ^^ space
       ^^ p_ty t1 ^/^ !^"=>" ^^ space ^^ p_ty t2 (* TODO: lbl *)
-    | e -> p_ctx e (* TODO: p_arith_ctx *)
+    | e -> p_arith_ctx e
   
-  and p_ctx (c : evalctx) : document = (* TODO: split like exp printer *)
+  and p_ctx (c : evalctx) : document =
     nest 2 (match c with
-    | CtxHole -> !^"[.]"
-    | OpCtx1 (o,c,e) -> p_ctx c ^^ space ^^ p_binop o ^^ space ^^ p_exp e
-    | OpCtx2 (o,e,c) -> p_exp e ^^ space ^^ p_binop o ^^ space ^^ p_ctx c
     | IfCtx (c,e1,e2) ->
-      !^"if " ^^ p_ctx c ^^ space
-      ^^ lparen ^^ p_exp e1 ^^ rparen ^^ space
-      ^^ lparen ^^ p_exp e2 ^^ rparen
-    | AppCtx1 (c, e2) -> lparen ^^ p_ctx c ^^ space ^^ p_exp e2 ^^ rparen
-    | AppCtx2 (e1, c) -> lparen ^^ p_exp e1 ^^ space ^^ p_ctx c ^^ rparen
-    | PairCtx1 (c,e2) -> langle ^^ p_ctx c ^^ comma ^/^ p_exp e2 ^^ rangle
-    | PairCtx2 (e1,c) -> langle ^^ p_exp e1 ^^ comma ^/^ p_ctx c ^^ rangle
-    | Proj1Ctx c -> !^"pi1" ^^ p_ctx c (* TODO: make simple_Exp *)
-    | Proj2Ctx c -> !^"pi2" ^^ p_ctx c (* TODO: make simple_Exp *)
+      !^"if" ^^ space ^^ p_ctx c ^/^ !^"then" ^^space^^ p_exp e1 ^/^
+      !^"else" ^^ space ^^ p_exp e2
     | LamCtx(x, t, c) ->
-      !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^/^ p_ctx c
+      !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^/^ group (p_ctx c)
     | AbstrCtx(x, cv) ->
-      !^"Lam " ^^ !^x ^^ !^"." ^/^ p_ctx cv
-    | _ -> parens (p_cast_ctx c)
-    (* | CPi (_,n, c) -> !^"pi." ^^ !^(string_of_int n) ^^ lparen ^^ p_ctx c ^^ rparen *)
-    )
+      !^"Lam " ^^ !^x ^^ !^"." ^/^ group (p_ctx cv)
+    | _ -> p_cast_ctx c)
 
   let rec p_store = function
     | [] -> !^"" (* TODO: should this stay empty?*)
