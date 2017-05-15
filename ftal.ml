@@ -14,6 +14,7 @@ module FTAL = struct
  end
 
 module Lang = struct
+  open PPrint
   (* Symbols *)
   let gensym =
     let count = ref 0 in
@@ -104,6 +105,100 @@ module Lang = struct
               | Proj2Ctx of evalctx
               | ConvCtx of evalctx * ty * convlbl * ty
               | CastCtx of evalctx * ty * complbl * ty
+  
+  (* Printer *)
+  let r d =
+    let b = Buffer.create 100 in
+    PPrint.ToBuffer.pretty 0.8 80 b d;
+    Buffer.contents b
+
+  let rec p_ty (t : ty) : document =
+    match t with
+    | VarTy s -> !^s
+    | IntTy -> !^"int"
+    | BoolTy -> !^"bool"
+    | PairTy (t1,t2) -> nest 2 (braces (p_ty t1 ^^ !^" -> " ^^ p_ty t2))
+    | FunTy (t1,t2) -> nest 2 (parens (p_ty t1 ^^ !^" -> " ^^ p_ty t2))
+    | ForallTy(x, t) -> !^"forall " ^^ !^x ^^ !^"." ^/^ p_ty t
+    | AnyTy -> !^"*"
+    (* | TTuple ts -> nest 2 (langle ^^ group (separate_map (comma ^^ break 1) p_ty ts) ^^ rangle) TODO: pairs *)
+
+  let p_lbl = function
+    | PosConvLbl a -> !^"+" ^^ !^a
+    | NegConvLbl a -> !^"-" ^^ !^a
+
+  let rec p_simple_exp (e : exp) : document = match e with
+    | VarExp e -> !^e
+    | IntExp n -> !^(string_of_int n)
+    | PairExp (e1,e2) -> langle ^^ (p_exp e1) ^^ comma ^/^ (p_exp e2) ^^ rangle
+    (* | EPi(_,n,e) -> !^"pi" ^^ space ^^ !^(string_of_int n) ^^ lparen ^^ p_exp e ^^ rparen TODO *)
+    | BlameExp (_, t) -> !^"blame" ^/^ colon ^^ space ^^ p_ty t
+    | e -> group (lparen ^^ p_exp e ^^ rparen)
+
+  and p_app_exp = function
+    | AppExp (e1, e2) -> p_simple_exp e1 ^/^ p_simple_exp e2
+    | InstExp (e, t) -> p_app_exp e ^/^ p_ty t
+    | e -> p_simple_exp e
+
+  and p_mul_exp = function
+    | OpExp ((Times as op), e1, e2) -> p_simple_exp e1 ^^ p_binop op ^^ p_simple_exp e2
+    | e -> p_app_exp e
+
+  and p_sum_exp = function
+    | OpExp ((Plus as op), e1, e2) -> p_sum_exp e1 ^^ p_binop op ^^ p_sum_exp e2
+    | OpExp ((Minus as op), e1, e2) -> p_sum_exp e1 ^^ p_binop op ^^ p_mul_exp e2
+    | e -> p_mul_exp e
+
+  and p_arith_exp e = p_sum_exp e
+
+  and p_cast_exp = function
+    | ConvExp (e, t1, lbl, t2) -> p_cast_exp e ^/^ colon ^^ space
+      ^^ p_ty t1 ^/^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2
+    | CastExp (e, t1, lbl, t2) -> p_cast_exp e ^/^ colon ^^ space
+      ^^ p_ty t1 ^/^ !^"=>" ^^ space ^^ p_ty t2 (* TODO: lbl *)
+      | e -> p_arith_exp e
+
+  and p_exp (e : exp) : document =
+    group @@ nest 2 (match e with
+    | IfExp(et,e1,e2) ->
+      !^"if" ^^ space ^^ p_simple_exp et
+      ^/^ p_simple_exp e1
+      ^/^ p_simple_exp e2
+    | LamExp(x, t, e) ->
+      !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^/^ p_exp e
+    | AbstrExp(x, e) ->
+    !^"Lam " ^^ !^x ^^ !^"." ^/^ p_exp e
+    | e -> p_cast_exp e
+  )
+
+  and p_binop (b : op) : document =
+    match b with
+    | Plus -> !^"+"
+    | Minus -> !^"-"
+    | Times -> !^"*"
+
+  and p_ctx (c : evalctx) : document =
+    nest 2 (match c with
+    | CtxHole -> !^"[.]"
+    | OpCtx1 (o,c,e) -> p_ctx c ^^ space ^^ p_binop o ^^ space ^^ p_exp e
+    | OpCtx2 (o,e,c) -> p_exp e ^^ space ^^ p_binop o ^^ space ^^ p_ctx c
+    | IfCtx (c,e1,e2) ->
+      !^"if " ^^ p_ctx c ^^ space
+      ^^ lparen ^^ p_exp e1 ^^ rparen ^^ space
+      ^^ lparen ^^ p_exp e2 ^^ rparen
+    | AppCtx1 (c, e2) -> lparen ^^ p_ctx c ^^ space ^^ p_exp e2 ^^ rparen
+    | AppCtx2 (e1, c) -> lparen ^^ p_exp e1 ^^ space ^^ p_ctx c ^^ rparen
+    | PairCtx1 (c,e2) -> langle ^^ p_ctx c ^^ comma ^/^ p_exp e2 ^^ rangle
+    | PairCtx2 (e1,c) -> langle ^^ p_exp e1 ^^ comma ^/^ p_ctx c ^^ rangle
+    | LamCtx(x, t, c) ->
+      !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^/^ p_ctx c
+    (* | CPi (_,n, c) -> !^"pi." ^^ !^(string_of_int n) ^^ lparen ^^ p_ctx c ^^ rparen *)
+    )
+
+  let show_exp e = (r (p_exp e))
+  let show_ctx c = (r (p_ctx c))
+  (* End Printer *)
+  
   
   let lblName lbl = match lbl with
     | PosConvLbl a -> a
@@ -299,63 +394,85 @@ module Lang = struct
     | (x,a)::tl -> typeWf s te a && envWf s te tl
 
   let rec expType s te env e = match e with
-    | BoolExp _ -> if envWf s te env then Some BoolTy else None
+    | BoolExp _ -> if envWf s te env then Ok BoolTy 
+      else Error (!^"Environment for expression" ^/^ p_exp e ^/^ !^"was malformed") (* TODO: get err from env*)
     | IfExp (c, e1, e2) -> 
-      (if expWf s te env c BoolTy then
-        let to1 = expType s te env e1 in
-        let to2 = expType s te env e2 in
-        match (to1,to2) with
-        | (Some t1, Some t2) -> if ty_eq t1 t2 then Some t1 else None
-        | _ -> None
-      else None)
-    | IntExp _ -> if envWf s te env then Some IntTy else None
+      (match expWf s te env c BoolTy with 
+        | Ok () ->
+          let to1 = expType s te env e1 in
+          let to2 = expType s te env e2 in
+          (match (to1,to2) with
+          | (Ok t1, Ok t2) -> if ty_eq t1 t2 then Ok t1 
+            else Error (!^"The two branches of the 'if' statement have types" ^/^
+              p_ty t1 ^^space^^ !^"and" ^/^
+              p_ty t2 ^^ !^", but should have the same type.")
+          | (Error s, _) -> Error s
+          | (_, Error s) -> Error s)
+        | Error s -> Error s)
+    | IntExp _ -> if envWf s te env then Ok IntTy 
+      else Error (!^"Environment for expression" ^/^ p_exp e ^/^ !^"was malformed") (* TODO: get err from env*)
     | OpExp (_, e, e') -> 
-      if expWf s te env e IntTy && expWf s te env e' IntTy 
-        then Some IntTy
-        else None
+      (match (expWf s te env e IntTy, expWf s te env e' IntTy) with
+        | (Ok (), Ok ()) -> Ok IntTy
+        | (Error s, _) -> Error s
+        | (_, Error s) -> Error s)
     | VarExp x -> (match envLookup env x with
-      | Some a -> if envWf s te env then Some a else None
-      | None -> None)
+      | Some a -> if envWf s te env then Ok a 
+        else Error (!^"Environment for expression" ^/^ p_exp e ^/^ !^"was malformed") (* TODO: get err from env*)
+      | None -> Error (!^"Variable" ^^ space ^^ !^x ^/^ !^"not found in environment."))
     | LamExp (x, a, e) -> (match expType s te ((x,a)::env) e with
-      | Some b -> Some (FunTy (a,b))
-      | None -> None)
+      | Ok b -> Ok (FunTy (a,b))
+      | Error s -> Error s)
     | AppExp (e1, e2) -> 
       let to1 = expType s te env e1 in
       let to2 = expType s te env e2 in
       (match (to1 , to2) with
-      | (Some (FunTy (t1, t2)), Some t1') -> if ty_eq t1 t1' then Some t2 else None
-      | _ -> None)
+      | (Ok (FunTy (t1, t2)), Ok t1') -> if ty_eq t1 t1' then Ok t2
+        else Error (!^"Function" ^^ space ^^ p_exp e1 ^/^ !^"has type" ^^ space ^^ p_ty (FunTy (t1, t2)) 
+          ^/^ !^"but its argument" ^^ space ^^ p_exp e2 ^/^ !^"has type" ^^ space ^^ p_ty t1' ^^ !^".")
+      | (Ok t, _) -> Error (!^"Expression" ^^ space ^^ p_exp e1 ^/^ !^"is not a function.")
+      | (Error s, _) -> Error s
+      | (_, Error s) -> Error s)
     | AbstrExp (x, v) -> (match expType s (x::te) env v with
-      | Some t -> if isValue v then Some (ForallTy (x,t)) else None
-      | None -> None)
+      | Ok t -> if isValue v then Ok (ForallTy (x,t)) 
+        else Error (!^"Expression" ^^ space ^^ p_exp v ^/^ !^"must be a value.")
+      | Error s -> Error s)
     | InstExp (e', b) -> (match expType s te env e' with
-      | Some (ForallTy (x, a)) -> if typeWf s te b 
-          then Some (substTy a (SubstTyVar (b, x, List.length te = 0)))
-          else None
-      | _ -> None)
+      | Ok (ForallTy (x, a)) -> if typeWf s te b 
+          then Ok (substTy a (SubstTyVar (b, x, List.length te = 0)))
+          else Error (!^"Type" ^^space^^ p_ty b ^/^ !^"is not well-formed.")
+      | Ok t -> Error (!^"Expression" ^^ space ^^ p_exp e' ^/^ !^"is not a type abstraction.")
+      | Error s -> Error s)
     | PairExp (e1, e2) ->
       let to1 = expType s te env e1 in
       let to2 = expType s te env e1 in
       (match (to1,to2) with
-        | (Some t1, Some t2) -> Some (PairTy (t1, t2))
-        | _ -> None)
+        | (Ok t1, Ok t2) -> Ok (PairTy (t1, t2))
+        | (Error s, _) -> Error s
+        |  (_, Error s) -> Error s)
     | Proj1Exp e' -> (match expType s te env e' with
-      | Some (PairTy (a, b)) -> Some a 
-      | _ -> None)
+      | Ok (PairTy (a, b)) -> Ok a 
+      | Error s -> Error s)
     | Proj2Exp e' -> (match expType s te env e' with
-      | Some (PairTy (a, b)) -> Some b
-      | _ -> None)
+      | Ok (PairTy (a, b)) -> Ok b
+      | Error s -> Error s)
     | ConvExp (e', t1, lbl, t2) -> 
-      if expWf s te env e' t1 
-        && convertible s te t1 lbl t2
-      then Some t2 else None
-    | CastExp (e', t1, lbl, t2) ->  
-      if expWf s te env e' t1 && compatible s te t1 t2
-      then Some t2 else None
-    | BlameExp (lbl,ty) -> Some ty
+      (match expWf s te env e' t1 with
+        | Ok t ->  if convertible s te t1 lbl t2 then Ok t2 
+          else Error (!^"Type" ^^space^^ p_ty t1 ^/^ group (!^"is not convertible to" ^^space^^ p_ty t2
+            ^/^ !^"by label" ^^space^^ p_lbl lbl))
+        | Error s -> Error s)
+    | CastExp (e', t1, lbl, t2) -> 
+      (match expWf s te env e' t1 with
+        | Ok t ->  if compatible s te t1 t2 then Ok t2 
+          else Error (!^"Type" ^^space^^ p_ty t1 ^/^ !^"is not compatible with" ^^space^^ p_ty t2)
+        | Error s -> Error s)
+    | BlameExp (lbl,ty) -> if typeWf s te ty then Ok ty 
+      else Error (!^"Type" ^^space ^^ p_ty ty ^/^ !^"assigned to blame is malformed.")
   and expWf s te env e typ = match expType s te env e with
-    | Some t -> ty_eq t typ
-    | None -> false
+    | Ok t -> if ty_eq t typ then Ok () else Error (!^"Expected type" ^^ space ^^ p_ty typ
+      ^/^ group (!^"but" ^^ space ^^ p_exp e ^/^ !^"is of type" ^^space^^ p_ty t ^^ !^"."))
+    | Error s -> Error s
 
   (* Assumption: expType [] [] [] p = Some t *)
   (* Invariant: if decompose p = (p', f)
@@ -474,11 +591,11 @@ module Lang = struct
     | InstExp (AbstrExp (x,v), b) -> 
       let a = gensym ~pref:"a" () in
       (match expType s [x] [] v with
-        | Some (t) -> Some ((a,b)::s, 
+        | Ok (t) -> Some ((a,b)::s, 
             ConvExp (substExp v (SubstTyVar (NameTy a, x, true)),  
               substTy t (SubstTyVar (NameTy a, x, true)), PosConvLbl a, 
               substTy t (SubstTyVar (b, x, true))))
-        | None -> None)
+        | Error _ -> None (* TODO: report error! *))
     | InstExp (CastExp (v, t1, lbl, ForallTy (x, t2)), b) ->
       let a = gensym ~pref:"a" () in
       let t2ax = substTy t2 (SubstTyVar (NameTy a, x, true)) in
@@ -501,7 +618,7 @@ module Lang = struct
     if isBlame p then None else (* Blame does not step *)
       let (p', evl) = decompose p in
       match p' with
-        | BlameExp (lbl, _) -> let Some(t) = expType s [] [] p in 
+        | BlameExp (lbl, _) -> let Ok(t) = expType s [] [] p in (* TODO: capture errors! *)
           Some (s, BlameExp (lbl, t)) (* However blame in a context does *)
         | _ -> (match storeStepRedex (s,p') with
           | Some (s',p'') -> Some (s', plug evl p'')
@@ -517,110 +634,5 @@ module Lang = struct
     match step (s,p) with
       | Some (s',p') -> run (s', p')
       | None -> (s,p)
-end
-
-module LangPrinter : sig
-  open PPrint
-  val r : document -> string
-  val p_ty : Lang.ty -> document
-  val p_exp : Lang.exp -> document
-  val p_ctx : Lang.evalctx -> document
-  
-  val show_exp : Lang.exp -> string
-  val show_ctx : Lang.evalctx -> string
-
-end = struct
-  open PPrint
-  open Lang
-
-  let r d =
-    let b = Buffer.create 100 in
-    PPrint.ToBuffer.pretty 0.8 80 b d;
-    Buffer.contents b
-
-  let rec p_ty (t : ty) : document =
-    match t with
-    | VarTy s -> !^s
-    | IntTy -> !^"int"
-    | BoolTy -> !^"bool"
-    | FunTy (t1,t2) -> nest 2 (parens (p_ty t1 ^^ !^" -> " ^^ p_ty t2))
-    | ForallTy(x, t) -> !^"forall " ^^ !^x ^^ !^"." ^^ break 1 ^^ p_ty t
-    | AnyTy -> !^"*"
-    (* | TTuple ts -> nest 2 (langle ^^ group (separate_map (comma ^^ break 1) p_ty ts) ^^ rangle) TODO: pairs *)
-
-  let p_lbl = function
-    | PosConvLbl a -> !^"+" ^^ !^a
-    | NegConvLbl a -> !^"-" ^^ !^a
-
-  let rec p_simple_exp (e : exp) : document = match e with
-    | VarExp e -> !^e
-    | IntExp n -> !^(string_of_int n)
-    | PairExp (e1,e2) -> langle ^^ (p_exp e1) ^^ comma ^^ break 1 ^^ (p_exp e2) ^^ rangle
-    (* | EPi(_,n,e) -> !^"pi" ^^ space ^^ !^(string_of_int n) ^^ lparen ^^ p_exp e ^^ rparen TODO *)
-    | BlameExp (_, t) -> !^"blame" ^^ break 1 ^^ colon ^^ space ^^ p_ty t
-    | e -> group (lparen ^^ p_exp e ^^ rparen)
-
-  and p_app_exp = function
-    | AppExp (e1, e2) -> p_simple_exp e1 ^^ break 1 ^^ p_simple_exp e2
-    | InstExp (e, t) -> p_app_exp e ^^ break 1 ^^ p_ty t
-    | e -> p_simple_exp e
-
-  and p_mul_exp = function
-    | OpExp ((Times as op), e1, e2) -> p_simple_exp e1 ^^ p_binop op ^^ p_simple_exp e2
-    | e -> p_app_exp e
-
-  and p_sum_exp = function
-    | OpExp ((Plus as op), e1, e2) -> p_sum_exp e1 ^^ p_binop op ^^ p_sum_exp e2
-    | OpExp ((Minus as op), e1, e2) -> p_sum_exp e1 ^^ p_binop op ^^ p_mul_exp e2
-    | e -> p_mul_exp e
-
-  and p_arith_exp e = p_sum_exp e
-
-  and p_cast_exp = function
-    | ConvExp (e, t1, lbl, t2) -> p_cast_exp e ^^ break 1 ^^ colon ^^ space
-      ^^ p_ty t1 ^^ break 1 ^^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2
-    | CastExp (e, t1, lbl, t2) -> p_cast_exp e ^^ break 1 ^^ colon ^^ space
-      ^^ p_ty t1 ^^ break 1 ^^ !^"=>" ^^ space ^^ p_ty t2 (* TODO: lbl *)
-      | e -> p_arith_exp e
-
-  and p_exp (e : exp) : document =
-    group @@ nest 2 (match e with
-    | IfExp(et,e1,e2) ->
-      !^"if" ^^ space ^^ p_simple_exp et
-      ^^ break 1 ^^ p_simple_exp e1
-      ^^ break 1 ^^ p_simple_exp e2
-    | LamExp(x, t, e) ->
-      !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^^ break 1 ^^ p_exp e
-    | AbstrExp(x, e) ->
-    !^"Lam " ^^ !^x ^^ !^"." ^^ break 1 ^^ p_exp e
-    | e -> p_cast_exp e
-  )
-
-  and p_binop (b : op) : document =
-    match b with
-    | Plus -> !^"+"
-    | Minus -> !^"-"
-    | Times -> !^"*"
-
-  and p_ctx (c : evalctx) : document =
-    nest 2 (match c with
-    | CtxHole -> !^"[.]"
-    | OpCtx1 (o,c,e) -> p_ctx c ^^ space ^^ p_binop o ^^ space ^^ p_exp e
-    | OpCtx2 (o,e,c) -> p_exp e ^^ space ^^ p_binop o ^^ space ^^ p_ctx c
-    | IfCtx (c,e1,e2) ->
-      !^"if " ^^ p_ctx c ^^ space
-      ^^ lparen ^^ p_exp e1 ^^ rparen ^^ space
-      ^^ lparen ^^ p_exp e2 ^^ rparen
-    | AppCtx1 (c, e2) -> lparen ^^ p_ctx c ^^ space ^^ p_exp e2 ^^ rparen
-    | AppCtx2 (e1, c) -> lparen ^^ p_exp e1 ^^ space ^^ p_ctx c ^^ rparen
-    | PairCtx1 (c,e2) -> langle ^^ p_ctx c ^^ comma ^^ break 1 ^^ p_exp e2 ^^ rangle
-    | PairCtx2 (e1,c) -> langle ^^ p_exp e1 ^^ comma ^^ break 1 ^^ p_ctx c ^^ rangle
-    | LamCtx(x, t, c) ->
-      !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^^ break 1 ^^ p_ctx c
-    (* | CPi (_,n, c) -> !^"pi." ^^ !^(string_of_int n) ^^ lparen ^^ p_ctx c ^^ rparen *)
-    )
-
-  let show_exp e = (r (p_exp e))
-  let show_ctx c = (r (p_ctx c))
 
 end

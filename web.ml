@@ -48,7 +48,7 @@ let omega = {|
 ((lam(f : * -> *).(f (f : * -> * => * ))) : ( * -> * ) -> * => * -> * )
 |}
 
-let factorial_f = Ftal.Lang.(Ftal.LangPrinter.show_exp (AppExp (Examples.factorial_f, IntExp 3)))
+let factorial_f = Ftal.Lang.(Ftal.Lang.show_exp (AppExp (Examples.factorial_f, IntExp 3)))
 
 let set_error ln m =
   let _ = Js.Unsafe.((coerce global)##seterror (Js.number_of_float (float_of_int ln)) (Js.string m)) in
@@ -86,15 +86,15 @@ let _ =
       | true ->
         H.((getElementById "next")##setAttribute (Js.string "disabled") (Js.string "on"));
         H.((getElementById "many")##setAttribute (Js.string "disabled") (Js.string "on"));
-        let _ = set_text "context" (Ftal.LangPrinter.show_exp e) in
+        let _ = set_text "context" (Ftal.Lang.show_exp e) in
         let _ = set_text "focus" "" in
         ()
       | false ->
         let (f, c) = Ftal.Lang.decompose e in
         H.((getElementById "next")##removeAttribute (Js.string "disabled"));
         H.((getElementById "many")##removeAttribute (Js.string "disabled"));
-        let _ = set_text "context" (Ftal.LangPrinter.show_ctx c) in
-        let _ = set_text "focus" (Ftal.LangPrinter.show_exp f) in
+        let _ = set_text "context" (Ftal.Lang.show_ctx c) in
+        let _ = set_text "focus" (Ftal.Lang.show_exp f) in
         ()
     in
     let _ = set_text "pc" (string_of_int (List.length past)) in
@@ -116,13 +116,13 @@ let _ =
             match parse_report_loc Parse.expression_eof s with
             | `Success e -> begin
                 match Lang.expType [] [] [] e with (* TODO: check None/move to type err *) (* TODO: context for expType (used defaultContext)*)
-                  | Some _ ->
+                  | Ok _ ->
                     hist := ((e, []), []);
                     refresh ();
                     clear_errors ();
                     show_machine ();
                     Js.Opt.return Js._false
-                | None -> raise (FTAL.TypeError ("Failed to typecheck", -1, -1)) (* TODO: better messages/remove error *)
+                | Error s -> raise (FTAL.TypeError (Ftal.Lang.r s, -1, -1)) (* TODO: simplify error handling *)
               end
             | `Error (line, msg) ->
               begin

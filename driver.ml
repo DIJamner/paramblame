@@ -1,7 +1,7 @@
 
 
 let print_expression chan expr =
-  let doc = Ftal.LangPrinter.p_exp expr in
+  let doc = Ftal.Lang.p_exp expr in
   PPrintEngine.ToChannel.pretty 0.8 80 chan doc;
   output_string chan "\n";
   flush chan

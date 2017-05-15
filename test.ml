@@ -17,7 +17,7 @@ let roundtrip ?source comp =
         close_out chan;
   in
   let write_result () =
-    let doc = LangPrinter.p_exp comp in
+    let doc = Lang.p_exp comp in
     let chan = open_out roundtrip in
     PPrintEngine.ToChannel.pretty 0.8 80 chan doc;
     flush chan;
@@ -53,7 +53,7 @@ let test1 _ = assert_eint
 
 let test1_ty _ = assert_equal
     (Lang.expType [] [] [] (expr "1 + 1"))
-    (Some Lang.IntTy);;
+    (Ok Lang.IntTy);;
 
 let test_app _ =
   assert_eint
@@ -74,13 +74,13 @@ let assert_raises_typeerror (f : unit -> 'a) : unit =
 let test_factorial_f_ty _ =
   assert_equal
     (Lang.expType [] [] [] factorial_f)
-    (Some Lang.(FunTy (IntTy, IntTy)))
+    (Ok Lang.(FunTy (IntTy, IntTy)))
 
 
 let test_examples _ =
   let assert_roundtrip expr =
-    let reparsed = Parse.parse_string Parse.expression_eof (Ftal.LangPrinter.show_exp expr) in
-    let rereparsed = Parse.parse_string Parse.expression_eof (Ftal.LangPrinter.show_exp reparsed) in
+    let reparsed = Parse.parse_string Parse.expression_eof (Ftal.Lang.show_exp expr) in
+    let rereparsed = Parse.parse_string Parse.expression_eof (Ftal.Lang.show_exp reparsed) in
     assert_equal reparsed rereparsed in
   assert_roundtrip Examples.factorial_f;
   ()
