@@ -59,9 +59,9 @@ simple_expression:
 | n=nat { IntExp n }
 | b=TRUE { BoolExp true }
 | b=FALSE { BoolExp false }
-| LBRACE e1=expression COMMA e2=expression RBRACE { PairExp (e1,e2) }
-| PI1 LPAREN e=expression RPAREN { Proj1Exp e }
-| PI2 LPAREN e=expression RPAREN { Proj2Exp e }
+| LANGLE e1=expression COMMA e2=expression RANGLE { PairExp (e1,e2) }
+| PI1 e=simple_expression { Proj1Exp e }
+| PI2 e=simple_expression { Proj2Exp e }
 /*TODO: add code positions */
 | BLAME COLON t=parened(typ) {BlameExp (PosCompLbl (CodeLoc(-1,-1)), t)}
 | LPAREN e=expression RPAREN { e }

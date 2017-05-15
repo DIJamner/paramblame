@@ -131,7 +131,8 @@ module Lang = struct
     | VarExp e -> !^e
     | IntExp n -> !^(string_of_int n)
     | PairExp (e1,e2) -> langle ^^ (p_exp e1) ^^ comma ^/^ (p_exp e2) ^^ rangle
-    (* | EPi(_,n,e) -> !^"pi" ^^ space ^^ !^(string_of_int n) ^^ lparen ^^ p_exp e ^^ rparen TODO *)
+    | Proj1Exp e -> !^"pi1" ^^ space ^^ p_simple_exp e
+    | Proj2Exp e -> !^"pi2" ^^ space ^^ p_simple_exp e
     | BlameExp (_, t) -> !^"blame" ^/^ colon ^^ space ^^ p_ty t
     | e -> group (lparen ^^ p_exp e ^^ rparen)
 
@@ -198,6 +199,8 @@ module Lang = struct
     | AppCtx2 (e1, c) -> lparen ^^ p_exp e1 ^^ space ^^ p_ctx c ^^ rparen
     | PairCtx1 (c,e2) -> langle ^^ p_ctx c ^^ comma ^/^ p_exp e2 ^^ rangle
     | PairCtx2 (e1,c) -> langle ^^ p_exp e1 ^^ comma ^/^ p_ctx c ^^ rangle
+    | Proj1Ctx c -> !^"pi1" ^^ p_ctx c (* TODO: make simple_Exp *)
+    | Proj2Ctx c -> !^"pi2" ^^ p_ctx c (* TODO: make simple_Exp *)
     | LamCtx(x, t, c) ->
       !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^/^ p_ctx c
     | AbstrCtx(x, cv) ->
