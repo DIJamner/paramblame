@@ -1,0 +1,822 @@
+expression_eof: BIGLAMBDA OTHER_IDENTIFIER DOT TIMES 
+##
+## Ends in an error in state: 54.
+##
+## expression -> BIGLAMBDA identifier DOT . expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## BIGLAMBDA identifier DOT 
+##
+
+Parsing a type abstraction expression of the form "Lam ID. EXP",
+we have parsed "Lam ID." and now expect an expression.
+
+expression_eof: BIGLAMBDA OTHER_IDENTIFIER TRUE 
+##
+## Ends in an error in state: 53.
+##
+## expression -> BIGLAMBDA identifier . DOT expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## BIGLAMBDA identifier 
+##
+
+Parsing a type abstraction expression of the form "Lam ID. EXP",
+we have parsed "Lam ID" and now expect a '.'.
+
+expression_eof: BIGLAMBDA TRUE 
+##
+## Ends in an error in state: 52.
+##
+## expression -> BIGLAMBDA . identifier DOT expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## BIGLAMBDA 
+##
+
+Parsing a type abstraction expression of the form "Lam ID. EXP",
+we have parsed "Lam" and now expect an identifier.
+
+expression_eof: BLAME COLON LPAREN TIMES RBRACKET 
+##
+## Ends in an error in state: 44.
+##
+## simple_expression -> BLAME COLON LPAREN typ . RPAREN [ TRUE TIMES RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## BLAME COLON LPAREN typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 27, spurious reduction of production typ -> simple_typ 
+##
+
+Parsing a blame expression of the form "blame : (TYP)",
+we have parsed "blame : (TYP" and now expect a ')'.
+
+expression_eof: BLAME COLON LPAREN TRUE 
+##
+## Ends in an error in state: 43.
+##
+## simple_expression -> BLAME COLON LPAREN . typ RPAREN [ TRUE TIMES RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## BLAME COLON LPAREN 
+##
+
+Parsing a blame expression of the form "blame : (TYP)",
+we have parsed "blame : (" and now expect a type.
+
+expression_eof: BLAME COLON TRUE 
+##
+## Ends in an error in state: 42.
+##
+## simple_expression -> BLAME COLON . LPAREN typ RPAREN [ TRUE TIMES RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## BLAME COLON 
+##
+
+Parsing a blame expression of the form "blame : (TYP)",
+we have parsed "blame :" and now expect a '('.
+
+expression_eof: BLAME TRUE 
+##
+## Ends in an error in state: 41.
+##
+## simple_expression -> BLAME . COLON LPAREN typ RPAREN [ TRUE TIMES RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## BLAME 
+##
+
+Parsing a blame expression of the form "blame : (TYP)",
+we have parsed "blame" and now expect a colon.
+
+expression_eof: IF TIMES 
+##
+## Ends in an error in state: 39.
+##
+## expression -> IF . simple_expression THEN simple_expression ELSE simple_expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## IF 
+##
+
+Parsing an if expression of the form "if EXP then EXP else EXP",
+we have parsed "if" and now expect an expression.
+
+expression_eof: IF TRUE THEN TIMES 
+##
+## Ends in an error in state: 48.
+##
+## expression -> IF simple_expression THEN . simple_expression ELSE simple_expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## IF simple_expression THEN 
+##
+
+Parsing an if expression of the form "if EXP then EXP else EXP",
+we have parsed "if EXP then" and now expect an expression.
+
+expression_eof: IF TRUE THEN TRUE ELSE TIMES 
+##
+## Ends in an error in state: 50.
+##
+## expression -> IF simple_expression THEN simple_expression ELSE . simple_expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## IF simple_expression THEN simple_expression ELSE 
+##
+
+Parsing an if expression of the form "if EXP then EXP else EXP",
+we have parsed "if EXP then EXP else" and now expect an expression.
+
+expression_eof: IF TRUE THEN TRUE TRUE 
+##
+## Ends in an error in state: 49.
+##
+## expression -> IF simple_expression THEN simple_expression . ELSE simple_expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## IF simple_expression THEN simple_expression 
+##
+
+Parsing an if expression of the form "if EXP then EXP else EXP",
+we have parsed "if EXP then EXP" and now expect an "else".
+
+expression_eof: IF TRUE TRUE 
+##
+## Ends in an error in state: 47.
+##
+## expression -> IF simple_expression . THEN simple_expression ELSE simple_expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## IF simple_expression 
+##
+
+Parsing an if expression of the form "if EXP then EXP else EXP",
+we have parsed "if EXP" and now expect a "then".
+
+expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TIMES RBRACKET 
+##
+## Ends in an error in state: 36.
+##
+## expression -> LAMBDA LPAREN term_variable COLON typ . RPAREN DOT expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## LAMBDA LPAREN term_variable COLON typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 27, spurious reduction of production typ -> simple_typ 
+##
+
+Parsing a lambda expression of the form "lam (ID : TYP). EXP",
+we have parsed "lam (ID : TYP" and now expect a ')'.
+
+expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TIMES RPAREN DOT TIMES 
+##
+## Ends in an error in state: 38.
+##
+## expression -> LAMBDA LPAREN term_variable COLON typ RPAREN DOT . expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## LAMBDA LPAREN term_variable COLON typ RPAREN DOT 
+##
+
+Parsing a lambda expression of the form "lam (ID : TYP). EXP",
+we have parsed "lam (ID : TYP)." and now expect an expression.
+
+expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TIMES RPAREN TRUE 
+##
+## Ends in an error in state: 37.
+##
+## expression -> LAMBDA LPAREN term_variable COLON typ RPAREN . DOT expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## LAMBDA LPAREN term_variable COLON typ RPAREN 
+##
+
+Parsing a lambda expression of the form "lam (ID : TYP). EXP",
+we have parsed "lam (ID : TYP)" and now expect a '.'.
+
+expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TRUE 
+##
+## Ends in an error in state: 15.
+##
+## expression -> LAMBDA LPAREN term_variable COLON . typ RPAREN DOT expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## LAMBDA LPAREN term_variable COLON 
+##
+
+Parsing a lambda expression of the form "lam (ID : TYP). EXP",
+we have parsed "lam (ID :" and now expect a type.
+
+expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER TRUE 
+##
+## Ends in an error in state: 14.
+##
+## expression -> LAMBDA LPAREN term_variable . COLON typ RPAREN DOT expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## LAMBDA LPAREN term_variable 
+##
+
+Parsing a lambda expression of the form "lam (ID : TYP). EXP",
+we have parsed "lam (ID" and now expect a colon.
+
+expression_eof: LAMBDA LPAREN TRUE 
+##
+## Ends in an error in state: 11.
+##
+## expression -> LAMBDA LPAREN . term_variable COLON typ RPAREN DOT expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## LAMBDA LPAREN 
+##
+
+Parsing a lambda expression of the form "lam (ID : TYP). EXP",
+we have parsed "lam (" and now expect an identifier.
+
+expression_eof: LAMBDA TRUE 
+##
+## Ends in an error in state: 10.
+##
+## expression -> LAMBDA . LPAREN term_variable COLON typ RPAREN DOT expression [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## LAMBDA 
+##
+
+Parsing a lambda expression of the form "lam (ID : TYP). EXP",
+we have parsed "lam" and now expect a '('.
+
+expression_eof: LANGLE TIMES 
+##
+## Ends in an error in state: 9.
+##
+## simple_expression -> LANGLE . expression COMMA expression RANGLE [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE 
+##
+
+Parsing a pair expression of the form "<EXP, EXP>",
+we have parsed "<" and now expect an expression.
+
+expression_eof: LANGLE TRUE COMMA TIMES 
+##
+## Ends in an error in state: 86.
+##
+## simple_expression -> LANGLE expression COMMA . expression RANGLE [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE expression COMMA 
+##
+
+Parsing a pair expression of the form "<EXP, EXP>",
+we have parsed "<EXP," and now expect an expression.
+
+expression_eof: LANGLE TRUE COMMA TRUE RPAREN 
+##
+## Ends in an error in state: 87.
+##
+## simple_expression -> LANGLE expression COMMA expression . RANGLE [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE expression COMMA expression 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 75, spurious reduction of production arith_expression -> app_expression 
+## In state 72, spurious reduction of production cast_expression -> arith_expression 
+## In state 59, spurious reduction of production expression -> cast_expression 
+##
+
+Parsing a pair expression of the form "<EXP, EXP>",
+we have parsed "<EXP, EXP" and now expect a '>'.
+
+expression_eof: LANGLE TRUE RPAREN 
+##
+## Ends in an error in state: 85.
+##
+## simple_expression -> LANGLE expression . COMMA expression RANGLE [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE expression 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 75, spurious reduction of production arith_expression -> app_expression 
+## In state 72, spurious reduction of production cast_expression -> arith_expression 
+## In state 59, spurious reduction of production expression -> cast_expression 
+##
+
+Parsing a pair expression of the form "<EXP, EXP>",
+we have parsed "<EXP" and now expect a ','.
+
+expression_eof: LPAREN TIMES 
+##
+## Ends in an error in state: 5.
+##
+## simple_expression -> LPAREN . expression RPAREN [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## LPAREN 
+##
+
+Parsing a parenthesized expression of the form "(EXP)",
+we have parsed "(" and now expect an expression.
+
+expression_eof: LPAREN TRUE RANGLE 
+##
+## Ends in an error in state: 89.
+##
+## simple_expression -> LPAREN expression . RPAREN [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## LPAREN expression 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 75, spurious reduction of production arith_expression -> app_expression 
+## In state 72, spurious reduction of production cast_expression -> arith_expression 
+## In state 59, spurious reduction of production expression -> cast_expression 
+##
+
+Parsing a parenthesized expression of the form "(EXP)",
+we have parsed "(EXP" and now expect a ')'.
+
+expression_eof: MINUS INTEGER TRUE 
+##
+## Ends in an error in state: 72.
+##
+## arith_expression -> arith_expression . PLUS arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+## arith_expression -> arith_expression . MINUS arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+## arith_expression -> arith_expression . TIMES arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+## cast_expression -> arith_expression . [ RPAREN RANGLE EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## arith_expression 
+##
+
+Parsing an arithmetic expression of the form "EXP OP EXP",
+we have parsed "EXP" and now expect one of "+", "-", or "*".
+
+expression_eof: MINUS TRUE 
+##
+## Ends in an error in state: 6.
+##
+## arith_expression -> MINUS . nat [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## MINUS 
+##
+
+Parsing a number of the form "-n",
+we have parsed "-" and now expect a natural number.
+
+expression_eof: PI1 TIMES 
+##
+## Ends in an error in state: 3.
+##
+## simple_expression -> PI1 . simple_expression [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## PI1 
+##
+
+Parsing a projection of the form "pi1 EXP",
+we have parsed "pi1" and now expect an expression.
+
+expression_eof: PI2 TIMES 
+##
+## Ends in an error in state: 2.
+##
+## simple_expression -> PI2 . simple_expression [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## PI2 
+##
+
+Parsing a projection of the form "pi2 EXP",
+we have parsed "pi2" and now expect an expression.
+
+expression_eof: TIMES 
+##
+## Ends in an error in state: 0.
+##
+## expression_eof' -> . expression_eof [ # ]
+##
+## The known suffix of the stack is as follows:
+## 
+##
+
+The symbol * is either a type or an operation, not an expression.
+
+expression_eof: TRUE COLON BOOL CAST BOOL RBRACKET 
+##
+## Ends in an error in state: 59.
+##
+## cast_expression -> cast_expression . COLON typ conv_lbl CAST typ [ RPAREN RANGLE EOF COMMA COLON ]
+## cast_expression -> cast_expression . COLON typ CAST typ [ RPAREN RANGLE EOF COMMA COLON ]
+## expression -> cast_expression . [ RPAREN RANGLE EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## cast_expression 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 27, spurious reduction of production typ -> simple_typ 
+## In state 68, spurious reduction of production cast_expression -> cast_expression COLON typ CAST typ 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON FORALL OTHER_IDENTIFIER DOT TRUE 
+##
+## Ends in an error in state: 22.
+##
+## typ -> FORALL identifier DOT . typ [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## FORALL identifier DOT 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON FORALL OTHER_IDENTIFIER TRUE 
+##
+## Ends in an error in state: 21.
+##
+## typ -> FORALL identifier . DOT typ [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## FORALL identifier 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON FORALL TRUE 
+##
+## Ends in an error in state: 20.
+##
+## typ -> FORALL . identifier DOT typ [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## FORALL 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON LANGLE TIMES COMMA TIMES RPAREN 
+##
+## Ends in an error in state: 32.
+##
+## simple_typ -> LANGLE typ COMMA typ . RANGLE [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE typ COMMA typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 27, spurious reduction of production typ -> simple_typ 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON LANGLE TIMES COMMA TRUE 
+##
+## Ends in an error in state: 31.
+##
+## simple_typ -> LANGLE typ COMMA . typ RANGLE [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE typ COMMA 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON LANGLE TIMES RPAREN 
+##
+## Ends in an error in state: 30.
+##
+## simple_typ -> LANGLE typ . COMMA typ RANGLE [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 27, spurious reduction of production typ -> simple_typ 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON LANGLE TRUE 
+##
+## Ends in an error in state: 18.
+##
+## simple_typ -> LANGLE . typ COMMA typ RANGLE [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON LPAREN TIMES RBRACKET 
+##
+## Ends in an error in state: 34.
+##
+## simple_typ -> LPAREN typ . RPAREN [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LPAREN typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 27, spurious reduction of production typ -> simple_typ 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON LPAREN TRUE 
+##
+## Ends in an error in state: 17.
+##
+## simple_typ -> LPAREN . typ RPAREN [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LPAREN 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON TIMES ARROW TRUE 
+##
+## Ends in an error in state: 28.
+##
+## typ -> simple_typ ARROW . typ [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## simple_typ ARROW 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON TIMES CAST TRUE 
+##
+## Ends in an error in state: 67.
+##
+## cast_expression -> cast_expression COLON typ CAST . typ [ RPAREN RANGLE EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## cast_expression COLON typ CAST 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON TIMES MINUS TRUE 
+##
+## Ends in an error in state: 65.
+##
+## conv_lbl -> MINUS . type_name [ CAST ]
+##
+## The known suffix of the stack is as follows:
+## MINUS 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER CAST TRUE 
+##
+## Ends in an error in state: 70.
+##
+## cast_expression -> cast_expression COLON typ conv_lbl CAST . typ [ RPAREN RANGLE EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## cast_expression COLON typ conv_lbl CAST 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER TRUE 
+##
+## Ends in an error in state: 69.
+##
+## cast_expression -> cast_expression COLON typ conv_lbl . CAST typ [ RPAREN RANGLE EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## cast_expression COLON typ conv_lbl 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON TIMES PLUS TRUE 
+##
+## Ends in an error in state: 62.
+##
+## conv_lbl -> PLUS . type_name [ CAST ]
+##
+## The known suffix of the stack is as follows:
+## PLUS 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON TIMES RPAREN 
+##
+## Ends in an error in state: 61.
+##
+## cast_expression -> cast_expression COLON typ . conv_lbl CAST typ [ RPAREN RANGLE EOF COMMA COLON ]
+## cast_expression -> cast_expression COLON typ . CAST typ [ RPAREN RANGLE EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## cast_expression COLON typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 27, spurious reduction of production typ -> simple_typ 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON TIMES TRUE 
+##
+## Ends in an error in state: 27.
+##
+## typ -> simple_typ . ARROW typ [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ]
+## typ -> simple_typ . [ RPAREN RBRACKET RANGLE PLUS MINUS EOF COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## simple_typ 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE COLON TRUE 
+##
+## Ends in an error in state: 60.
+##
+## cast_expression -> cast_expression COLON . typ conv_lbl CAST typ [ RPAREN RANGLE EOF COMMA COLON ]
+## cast_expression -> cast_expression COLON . typ CAST typ [ RPAREN RANGLE EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## cast_expression COLON 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE LBRACKET TIMES RPAREN 
+##
+## Ends in an error in state: 77.
+##
+## app_expression -> app_expression LBRACKET typ . RBRACKET [ TRUE TIMES RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## app_expression LBRACKET typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 27, spurious reduction of production typ -> simple_typ 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE LBRACKET TRUE 
+##
+## Ends in an error in state: 76.
+##
+## app_expression -> app_expression LBRACKET . typ RBRACKET [ TRUE TIMES RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+##
+## The known suffix of the stack is as follows:
+## app_expression LBRACKET 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE MINUS MINUS INTEGER TRUE 
+##
+## Ends in an error in state: 83.
+##
+## arith_expression -> arith_expression . PLUS arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+## arith_expression -> arith_expression . MINUS arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+## arith_expression -> arith_expression MINUS arith_expression . [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+## arith_expression -> arith_expression . TIMES arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## arith_expression MINUS arith_expression 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE MINUS TIMES 
+##
+## Ends in an error in state: 82.
+##
+## arith_expression -> arith_expression MINUS . arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## arith_expression MINUS 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE PLUS MINUS INTEGER TRUE 
+##
+## Ends in an error in state: 81.
+##
+## arith_expression -> arith_expression . PLUS arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+## arith_expression -> arith_expression PLUS arith_expression . [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+## arith_expression -> arith_expression . MINUS arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+## arith_expression -> arith_expression . TIMES arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## arith_expression PLUS arith_expression 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE PLUS TIMES 
+##
+## Ends in an error in state: 80.
+##
+## arith_expression -> arith_expression PLUS . arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## arith_expression PLUS 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE RPAREN 
+##
+## Ends in an error in state: 94.
+##
+## expression_eof -> expression . EOF [ # ]
+##
+## The known suffix of the stack is as follows:
+## expression 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 75, spurious reduction of production arith_expression -> app_expression 
+## In state 72, spurious reduction of production cast_expression -> arith_expression 
+## In state 59, spurious reduction of production expression -> cast_expression 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE THEN 
+##
+## Ends in an error in state: 75.
+##
+## app_expression -> app_expression . LBRACKET typ RBRACKET [ TRUE TIMES RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+## app_expression -> app_expression . simple_expression [ TRUE TIMES RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER FALSE EOF COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+## arith_expression -> app_expression . [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## app_expression 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
+expression_eof: TRUE TIMES TIMES 
+##
+## Ends in an error in state: 73.
+##
+## arith_expression -> arith_expression TIMES . arith_expression [ TIMES RPAREN RANGLE PLUS MINUS EOF COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## arith_expression TIMES 
+##
+
+<YOUR SYNTAX ERROR MESSAGE HERE>
+
