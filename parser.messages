@@ -445,7 +445,10 @@ expression_eof: TRUE COLON BOOL CAST BOOL RBRACKET
 ## In state 68, spurious reduction of production cast_expression -> cast_expression COLON typ CAST typ 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Failed after parsing a cast expression. 
+Cast expressions must be parenthesized inside of arithmetic
+expressions, application, or instantiation. 
+Most likely, this is the problem.
 
 expression_eof: TRUE COLON FORALL OTHER_IDENTIFIER DOT TRUE 
 ##
@@ -457,7 +460,8 @@ expression_eof: TRUE COLON FORALL OTHER_IDENTIFIER DOT TRUE
 ## FORALL identifier DOT 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a forall type of the form "forall ID. TYP",
+we have parsed "forall ID." and now expect a type.
 
 expression_eof: TRUE COLON FORALL OTHER_IDENTIFIER TRUE 
 ##
@@ -469,7 +473,8 @@ expression_eof: TRUE COLON FORALL OTHER_IDENTIFIER TRUE
 ## FORALL identifier 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a forall type of the form "forall ID. TYP",
+we have parsed "forall ID" and now expect a '.'.
 
 expression_eof: TRUE COLON FORALL TRUE 
 ##
@@ -481,7 +486,8 @@ expression_eof: TRUE COLON FORALL TRUE
 ## FORALL 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a forall type of the form "forall ID. TYP",
+we have parsed "forall" and now expect an indentifier.
 
 expression_eof: TRUE COLON LANGLE TIMES COMMA TIMES RPAREN 
 ##
@@ -499,7 +505,8 @@ expression_eof: TRUE COLON LANGLE TIMES COMMA TIMES RPAREN
 ## In state 27, spurious reduction of production typ -> simple_typ 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a pair type of the form "<TYP, TYP>",
+we have parsed "<TYP, TYP" and now expect a '>'.
 
 expression_eof: TRUE COLON LANGLE TIMES COMMA TRUE 
 ##
@@ -511,7 +518,8 @@ expression_eof: TRUE COLON LANGLE TIMES COMMA TRUE
 ## LANGLE typ COMMA 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a pair type of the form "<TYP, TYP>",
+we have parsed "<TYP," and now expect a type.
 
 expression_eof: TRUE COLON LANGLE TIMES RPAREN 
 ##
@@ -529,7 +537,8 @@ expression_eof: TRUE COLON LANGLE TIMES RPAREN
 ## In state 27, spurious reduction of production typ -> simple_typ 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a pair type of the form "<TYP, TYP>",
+we have parsed "<TYP" and now expect a ','.
 
 expression_eof: TRUE COLON LANGLE TRUE 
 ##
@@ -541,7 +550,8 @@ expression_eof: TRUE COLON LANGLE TRUE
 ## LANGLE 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a pair type of the form "<TYP, TYP>",
+we have parsed "<" and now expect a type.
 
 expression_eof: TRUE COLON LPAREN TIMES RBRACKET 
 ##
@@ -559,7 +569,8 @@ expression_eof: TRUE COLON LPAREN TIMES RBRACKET
 ## In state 27, spurious reduction of production typ -> simple_typ 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a parenthesized type of the form "(TYP)",
+we have parsed "(TYP" and now expect a ')'.
 
 expression_eof: TRUE COLON LPAREN TRUE 
 ##
@@ -571,7 +582,8 @@ expression_eof: TRUE COLON LPAREN TRUE
 ## LPAREN 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a parenthesized type of the form "(TYP)",
+we have parsed "(" and now expect a type.
 
 expression_eof: TRUE COLON TIMES ARROW TRUE 
 ##
@@ -583,7 +595,8 @@ expression_eof: TRUE COLON TIMES ARROW TRUE
 ## simple_typ ARROW 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing an arrow type of the form "TYP -> TYP",
+we have parsed "TYP ->" and now expect a type.
 
 expression_eof: TRUE COLON TIMES CAST TRUE 
 ##
@@ -595,7 +608,8 @@ expression_eof: TRUE COLON TIMES CAST TRUE
 ## cast_expression COLON typ CAST 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a cast expression of the form "EXP : TYP => TYP",
+we have parsed "EXP : TYP =>" and now expect a type.
 
 expression_eof: TRUE COLON TIMES MINUS TRUE 
 ##
@@ -607,7 +621,8 @@ expression_eof: TRUE COLON TIMES MINUS TRUE
 ## MINUS 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a conversion label of the form "-ID",
+we have parsed "-" and now expect an identifier.
 
 expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER CAST TRUE 
 ##
@@ -619,7 +634,8 @@ expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER CAST TRUE
 ## cast_expression COLON typ conv_lbl CAST 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a cast expression of the form "EXP : TYP => TYP",
+we have parsed "EXP : TYP" and now expect a "=>".
 
 expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER TRUE 
 ##
@@ -631,7 +647,8 @@ expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER TRUE
 ## cast_expression COLON typ conv_lbl 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a conversion expression of the form "EXP : TYP +ID=> TYP",
+we have parsed "EXP : TYP +ID" and now expect a "=>".
 
 expression_eof: TRUE COLON TIMES PLUS TRUE 
 ##
@@ -643,7 +660,8 @@ expression_eof: TRUE COLON TIMES PLUS TRUE
 ## PLUS 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing a conversion label of the form "+ID",
+we have parsed "+" and now expect an identifier.
 
 expression_eof: TRUE COLON TIMES RPAREN 
 ##
@@ -662,7 +680,9 @@ expression_eof: TRUE COLON TIMES RPAREN
 ## In state 27, spurious reduction of production typ -> simple_typ 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing either a conversion expression of the form "EXP : TYP +ID=> TYP",
+or a cast expression of the form "EXP : TYP => TYP",
+we have parsed "EXP : TYP" and now expect either a conversion label or a "=>".
 
 expression_eof: TRUE COLON TIMES TRUE 
 ##
@@ -675,7 +695,9 @@ expression_eof: TRUE COLON TIMES TRUE
 ## simple_typ 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing either a conversion expression of the form "EXP : TYP +ID=> TYP",
+or a cast expression of the form "EXP : TYP => TYP",
+we have parsed "EXP : TYP" and now expect either a conversion label or a "=>".
 
 expression_eof: TRUE COLON TRUE 
 ##
@@ -688,7 +710,9 @@ expression_eof: TRUE COLON TRUE
 ## cast_expression COLON 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing either a conversion expression of the form "EXP : TYP +ID=> TYP",
+or a cast expression of the form "EXP : TYP => TYP",
+we have parsed "EXP :" and now expect a type.
 
 expression_eof: TRUE LBRACKET TIMES RPAREN 
 ##
@@ -706,7 +730,8 @@ expression_eof: TRUE LBRACKET TIMES RPAREN
 ## In state 27, spurious reduction of production typ -> simple_typ 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing an instantiation expression of the form "EXP [TYP]",
+we have parsed "EXP [TYP" and now expect a ']'.
 
 expression_eof: TRUE LBRACKET TRUE 
 ##
@@ -718,7 +743,8 @@ expression_eof: TRUE LBRACKET TRUE
 ## app_expression LBRACKET 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing an instantiation expression of the form "EXP [TYP]",
+we have parsed "EXP [" and now expect a type.
 
 expression_eof: TRUE MINUS MINUS INTEGER TRUE 
 ##
@@ -733,7 +759,9 @@ expression_eof: TRUE MINUS MINUS INTEGER TRUE
 ## arith_expression MINUS arith_expression 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing an arithmetic expression of the form "EXP OP EXP",
+we have parsed "EXP OP EXP" and encountered what looks like an application.
+To perform arithmetic inside an application, please use parentheses.
 
 expression_eof: TRUE MINUS TIMES 
 ##
@@ -745,7 +773,8 @@ expression_eof: TRUE MINUS TIMES
 ## arith_expression MINUS 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing an arithmetic expression of the form "EXP OP EXP",
+we have parsed "EXP OP" and now expect an expression.
 
 expression_eof: TRUE PLUS MINUS INTEGER TRUE 
 ##
@@ -760,7 +789,9 @@ expression_eof: TRUE PLUS MINUS INTEGER TRUE
 ## arith_expression PLUS arith_expression 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing an arithmetic expression of the form "EXP OP EXP",
+we have parsed "EXP OP EXP" and encountered what looks like an application.
+To perform arithmetic inside an application, please use parentheses.
 
 expression_eof: TRUE PLUS TIMES 
 ##
@@ -772,7 +803,8 @@ expression_eof: TRUE PLUS TIMES
 ## arith_expression PLUS 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing an arithmetic expression of the form "EXP OP EXP",
+we have parsed "EXP OP" and now expect an expression.
 
 expression_eof: TRUE RPAREN 
 ##
@@ -792,7 +824,7 @@ expression_eof: TRUE RPAREN
 ## In state 59, spurious reduction of production expression -> cast_expression 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Unmatched '(' at end of file.
 
 expression_eof: TRUE THEN 
 ##
@@ -806,7 +838,7 @@ expression_eof: TRUE THEN
 ## app_expression 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Token "then" appears without a preceding "if".
 
 expression_eof: TRUE TIMES TIMES 
 ##
@@ -818,5 +850,6 @@ expression_eof: TRUE TIMES TIMES
 ## arith_expression TIMES 
 ##
 
-<YOUR SYNTAX ERROR MESSAGE HERE>
+Parsing an arithmetic expression of the form "EXP OP EXP",
+we have parsed "EXP OP" and now expect an expression.
 
