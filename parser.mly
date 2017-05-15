@@ -85,7 +85,7 @@ cast_expression:
 | e=arith_expression { e }
 
 expression:
-| IF p=simple_expression THEN e1=simple_expression ELSE e2=simple_expression
+| IF p=cast_expression THEN e1=cast_expression ELSE e2=cast_expression
   { IfExp (p, e1, e2) }
 | LAMBDA LPAREN x=term_variable COLON t=typ RPAREN DOT body=expression
   { LamExp (x, t, body) }

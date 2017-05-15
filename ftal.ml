@@ -165,9 +165,9 @@ module Lang = struct
   and p_exp (e : exp) : document =
     group @@ nest 2 (match e with
     | IfExp(et,e1,e2) ->
-      !^"if" ^^ space ^^ p_simple_exp et
-      ^/^ !^"then" ^^space^^ p_simple_exp e1
-      ^/^ !^"else" ^^space^^ p_simple_exp e2
+      !^"if" ^^ space ^^ p_cast_exp et
+      ^/^ !^"then" ^^space^^ p_cast_exp e1
+      ^/^ !^"else" ^^space^^ p_cast_exp e2
     | LamExp(x, t, e) ->
       !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^/^ p_exp e
     | AbstrExp(x, e) ->
