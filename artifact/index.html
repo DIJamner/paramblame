@@ -121,6 +121,7 @@
       <table>
         <tr><th>Paper</th><th>Artifact</th><th>Description</th></tr>
 
+<!--
         <tr>
           <td><code>(&iota;; ..., l &rarr; h, ...)</code></td>
           <td><code>([instr; ...],[l -> h, ...])</code></td>
@@ -166,19 +167,48 @@
           lambdas) are written as <code>::</code>, and stack prefixes
           end with <code>::</code>.</td>
         </tr>
-
+-->
         <tr>
-          <td><code>&forall;, &mu;, &lambda;, &#8707;, &bullet;</code></td>
-          <td><code>forall, mu, lam, exists, *</code></td>
+          <td><code>&forall;, &lambda;, &Lambda;, &pi;<sub>1</sub>, &pi;<sub>2</sub> </code></td>
+          <td><code>forall, lam, Lam, pi1, pi2</code></td>
           <td>Greek letters and quantifiers are replaced by english keywords.</td>
         </tr>
+        <tr>
+          <td><code>&#11089;</code></td>
+          <td><code>*</code></td>
+          <td>The dynamic type is written with the ASCI asteriks.</td>
+        </tr>
 
+        <tr>
+          <td><code>e : T<sub>1</sub> ⇒<sup>p</sup> T<sub>2</sub></code></td>
+          <td><code>e : T<sub>1</sub> => T<sub>2</sub></code></td>
+          <td>Cast expressions use an ASCI arrow and do not include the blame label.</td>
+        </tr>
+
+        <tr>
+          <td><code>(e<sub>1</sub>, e<sub>2</sub>)</code></td>
+          <td><code>&lt;e<sub>1</sub>, e<sub>2</sub>&gt; </code></td>
+          <td>Pairs are enclosed in &lt; and &gt; instead of parentheses.</td>
+        </tr>
+
+        <tr>
+          <td><code>T<sub>1</sub> &times; T<sub>2</sub></code></td>
+          <td><code>&lt;T<sub>1</sub>, T<sub>2</sub>&gt; </code></td>
+          <td>Pair types are written with &lt; and &gt; instead of &times;.</td>
+        </tr>
+
+        <tr>
+          <td><code>let x = e<sub>1</sub> in e<sub>2</sub></code></td>
+          <td><code>let x : T = e<sub>1</sub> in e<sub>2</sub></code></td>
+          <td>Let expressions require a type annotation.</td>
+        </tr>
+	
+<!--
         <tr>
           <td><code>&bullet;</code></td>
           <td><code>*</code></td>
           <td>The concrete stack symbol <code>&bullet;</code> is written <code>*</code>.</td>
         </tr>
-
         <tr>
           <td><code>u[&omega;]</code></td>
           <td><code>u[&omega;, &omega;...]</code></td>
@@ -211,7 +241,7 @@
           <td>Heap values are preceded by an explicit mutability marker <code>box</code> or <code>ref</code>.</td>
         </tr>
       </table>
-
+-->
 
       <div class="footer">
         Powered by OCaml and js_of_ocaml.

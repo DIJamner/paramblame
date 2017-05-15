@@ -330,7 +330,12 @@ module Lang = struct
         Cases where we avoid renaming: 
         - If the substition is closed
         - If the substitution is a renaming *)
+      (*
+      This is broken because it doesn't consider when y is in the domain 
+      of the substitution. -Jeremy
+
       if closedSubst sub then LamExp (y, substTy a sub, substExp b sub) else
+      *)
       (match getRenameExpVar sub with
         | Some x  when y = x -> LamExp (y, a, b) 
         | Some x -> LamExp (y, substTy a sub, substExp b sub)
