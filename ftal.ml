@@ -117,7 +117,7 @@ module Lang = struct
     | VarTy s -> !^s
     | IntTy -> !^"int"
     | BoolTy -> !^"bool"
-    | PairTy (t1,t2) -> nest 2 (braces (p_ty t1 ^^ !^" -> " ^^ p_ty t2))
+    | PairTy (t1,t2) -> nest 2 (angles (p_ty t1 ^^ !^"," ^^ p_ty t2))
     | FunTy (t1,t2) -> nest 2 (parens (p_ty t1 ^^ !^" -> " ^^ p_ty t2))
     | ForallTy(x, t) -> !^"forall " ^^ !^x ^^ !^"." ^/^ p_ty t
     | AnyTy -> !^"*"
@@ -328,9 +328,9 @@ module Lang = struct
   let rec ty_eq t1 t2 = match (t1, t2) with
     | (IntTy, IntTy) -> true
     | (BoolTy, BoolTy) -> true
-    | (FunTy (a1, b1), FunTy (a2, b2)) -> ty_eq a1 b1 && ty_eq a2 b2
+    | (FunTy (a1, b1), FunTy (a2, b2)) -> ty_eq a1 a2 && ty_eq b1 b2
     | (ForallTy (x, t1'), ForallTy (y, t2')) -> ty_eq t1' (substTy t2' (RenameTyVar (x, y)))
-    | (PairTy (a1, b1), PairTy (a2, b2)) -> ty_eq a1 b1 && ty_eq a2 b2
+    | (PairTy (a1, b1), PairTy (a2, b2)) -> ty_eq a1 a2 && ty_eq b1 b2
     | (VarTy x1, VarTy x2) -> x1 = x2
     | (NameTy n1, NameTy n2) -> n1 = n2
     | (AnyTy, AnyTy) -> true
@@ -430,7 +430,8 @@ module Lang = struct
       | (Ok (FunTy (t1, t2)), Ok t1') -> if ty_eq t1 t1' then Ok t2
         else Error (!^"Function" ^^ space ^^ p_exp e1 ^/^ !^"has type" ^^ space ^^ p_ty (FunTy (t1, t2)) 
           ^/^ !^"but its argument" ^^ space ^^ p_exp e2 ^/^ !^"has type" ^^ space ^^ p_ty t1' ^^ !^".")
-      | (Ok t, _) -> Error (!^"Expression" ^^ space ^^ p_exp e1 ^/^ !^"is not a function.")
+      | (Ok t1, Ok t2) -> Error (!^"Expression" ^^ space ^^ p_exp e1 ^/^ 
+        !^"should be a function, but has type" ^^space^^ p_ty t1 ^^ !^".")
       | (Error s, _) -> Error s
       | (_, Error s) -> Error s)
     | AbstrExp (x, v) -> (match expType s (x::te) env v with
