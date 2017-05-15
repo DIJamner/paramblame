@@ -1,7 +1,7 @@
 %token PLUS MINUS TIMES /* these are the binary symbols */
-%token FORALL CROSS BLAME
+%token FORALL BLAME
 %token INT BOOL
-%token LANGLE RANGLE LBRACKET RBRACKET LBRACE RBRACE LPAREN RPAREN
+%token LANGLE RANGLE LBRACKET RBRACKET LPAREN RPAREN
 %token DOT COMMA COLON ARROW CAST
 %token LAMBDA BIGLAMBDA IF THEN ELSE PI1 PI2
 %token<string> A_IDENTIFIER OTHER_IDENTIFIER CAP_IDENTIFIER
@@ -138,9 +138,6 @@ tuple(elem):
 %inline mayparened(elem):
 | x=elem { x }
 | x=parened(elem) { x }
-
-%inline braced(elem):
-| LBRACE x=elem RBRACE {x}
 
 %inline bracketed(elem):
 | LBRACKET x=elem RBRACKET {x}
