@@ -117,11 +117,11 @@ module Lang = struct
     | VarTy s -> !^s
     | IntTy -> !^"int"
     | BoolTy -> !^"bool"
+    | NameTy n -> !^n
     | PairTy (t1,t2) -> nest 2 (angles (p_ty t1 ^^ !^"," ^^ p_ty t2))
     | FunTy (t1,t2) -> nest 2 (parens (p_ty t1 ^^ !^" -> " ^^ p_ty t2))
     | ForallTy(x, t) -> !^"forall " ^^ !^x ^^ !^"." ^/^ p_ty t
     | AnyTy -> !^"*"
-    (* | TTuple ts -> nest 2 (langle ^^ group (separate_map (comma ^^ break 1) p_ty ts) ^^ rangle) TODO: pairs *)
 
   let p_lbl = function
     | PosConvLbl a -> !^"+" ^^ !^a
@@ -130,6 +130,8 @@ module Lang = struct
   let rec p_simple_exp (e : exp) : document = match e with
     | VarExp e -> !^e
     | IntExp n -> !^(string_of_int n)
+    | BoolExp true -> !^"true"
+    | BoolExp false -> !^"false"
     | PairExp (e1,e2) -> langle ^^ (p_exp e1) ^^ comma ^/^ (p_exp e2) ^^ rangle
     | Proj1Exp e -> !^"pi1" ^^ space ^^ p_simple_exp e
     | Proj2Exp e -> !^"pi2" ^^ space ^^ p_simple_exp e
