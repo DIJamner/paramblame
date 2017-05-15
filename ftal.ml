@@ -289,6 +289,18 @@ module Lang = struct
     | SubstTyVar (_, _, b) -> b
     | SubstExpVar (_, _, b) -> b
 
+  let substExpDom = function
+    | RenameTyVar _ -> None
+    | RenameExpVar (_, x) -> Some x
+    | SubstTyVar _ -> None
+    | SubstExpVar (_, x, b) -> Some x
+
+  let substTyDom = function
+    | RenameTyVar (_, x) -> Some x
+    | RenameExpVar _ -> None
+    | SubstTyVar (_, x, b) -> Some x
+    | SubstExpVar _ -> None
+
   (* perform a substitution on a type *)
   let rec substTy typ sub = match typ with
     | IntTy -> IntTy
@@ -299,6 +311,7 @@ module Lang = struct
         Cases where we avoid renaming: 
         - If the substition is closed
         - If the substitution is a renaming *)
+      if substTyDom sub = Some x then ForallTy(x, b) else
       if closedSubst sub then ForallTy (x, substTy b sub) else
       (match getRenameTyVar sub with
         | Some y when y = x -> ForallTy (x, b) 
@@ -329,13 +342,11 @@ module Lang = struct
       (* Avoid renaming when possible for ease-of-use/efficiency. 
         Cases where we avoid renaming: 
         - If the substition is closed
-        - If the substitution is a renaming *)
-      (*
-      This is broken because it doesn't consider when y is in the domain 
-      of the substitution. -Jeremy
-
+        - If the substitution is a renaming
+        NOTE: we may only do the above when the domain 
+        of the substitution is not y *)
+      if substExpDom sub = Some y then LamExp(y, a, b) else
       if closedSubst sub then LamExp (y, substTy a sub, substExp b sub) else
-      *)
       (match getRenameExpVar sub with
         | Some x  when y = x -> LamExp (y, a, b) 
         | Some x -> LamExp (y, substTy a sub, substExp b sub)
@@ -346,7 +357,10 @@ module Lang = struct
       (* Avoid renaming when possible for ease-of-use/efficiency. 
         Cases where we avoid renaming: 
         - If the substition is closed
-        - If the substitution is a renaming *)
+        - If the substitution is a renaming 
+        NOTE: we may only do the above when the domain 
+        of the substitution is not y *)
+      if substTyDom sub = Some x then AbstrExp(x, v) else
       if closedSubst sub then AbstrExp (x, substExp v sub) else
       (match getRenameTyVar sub with
         | Some y when y = x -> AbstrExp (x, v) 
