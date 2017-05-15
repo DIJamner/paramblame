@@ -137,7 +137,7 @@ module Lang = struct
 
   and p_app_exp = function
     | AppExp (e1, e2) -> p_simple_exp e1 ^/^ p_simple_exp e2
-    | InstExp (e, t) -> p_app_exp e ^/^ p_ty t
+    | InstExp (e, t) -> p_app_exp e ^/^ brackets (p_ty t)
     | e -> p_simple_exp e
 
   and p_mul_exp = function
@@ -177,7 +177,15 @@ module Lang = struct
     | Minus -> !^"-"
     | Times -> !^"*"
 
-  and p_ctx (c : evalctx) : document =
+
+  let rec p_cast_ctx (c : evalctx) : document = match c with
+    | ConvCtx (c, t1, lbl, t2) -> p_cast_ctx c ^/^ colon ^^ space
+      ^^ p_ty t1 ^/^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2
+    | CastCtx (c, t1, lbl, t2) -> p_cast_ctx c ^/^ colon ^^ space
+      ^^ p_ty t1 ^/^ !^"=>" ^^ space ^^ p_ty t2 (* TODO: lbl *)
+    | e -> p_ctx e (* TODO: p_arith_ctx *)
+  
+  and p_ctx (c : evalctx) : document = (* TODO: split like exp printer *)
     nest 2 (match c with
     | CtxHole -> !^"[.]"
     | OpCtx1 (o,c,e) -> p_ctx c ^^ space ^^ p_binop o ^^ space ^^ p_exp e
@@ -192,11 +200,20 @@ module Lang = struct
     | PairCtx2 (e1,c) -> langle ^^ p_exp e1 ^^ comma ^/^ p_ctx c ^^ rangle
     | LamCtx(x, t, c) ->
       !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^/^ p_ctx c
+    | AbstrCtx(x, cv) ->
+      !^"Lam " ^^ !^x ^^ !^"." ^/^ p_ctx cv
+    | _ -> parens (p_cast_ctx c)
     (* | CPi (_,n, c) -> !^"pi." ^^ !^(string_of_int n) ^^ lparen ^^ p_ctx c ^^ rparen *)
     )
 
+  let rec p_store = function
+    | [] -> !^"" (* TODO: should this stay empty?*)
+    | (a,t)::[] -> !^a ^^ !^":=" ^^ p_ty t
+    | (a,t)::tl -> group (!^a ^^ !^":=" ^^ p_ty t ^^ !^"," ^^ break 1) ^^ p_store tl
+
   let show_exp e = (r (p_exp e))
   let show_ctx c = (r (p_ctx c))
+  let show_store s = (r (p_store s))
   (* End Printer *)
   
   

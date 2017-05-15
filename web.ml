@@ -98,7 +98,7 @@ let _ =
         ()
     in
     let _ = set_text "pc" (string_of_int (List.length past)) in
-    (* let _ = set_text "heap" (Ftal.T A L.show_heapm h) in (* TODO: name store*) *)
+    let _ = set_text "store" (Ftal.Lang.show_store s) in
     ()
   in
   let next' _ =
