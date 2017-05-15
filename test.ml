@@ -82,12 +82,19 @@ let test_paper2 _ =
 let test_paper3 _ =
   check_and_run (expr "pi1 ((Lam X. Lam Y. lam (p : <X,Y>). < pi2 p, pi1 p >) [bool] [int] <true, 1>)") 1
 
-let test_paper4 _ =
+let test_paper4a _ =
   check_and_run (expr {|
     let inc : * = (lam (x : *). (x : * => int) + 1 : int => *) : *->* => * in
     let once : * = (lam (f : *). (lam (x : *). (f : * => *->*) x) : *->* => *) : *->* => * in
     ((((once : * => *->*) inc) : * => *->*) (0 : int => *)) : * => int
     |}) 1
+
+let test_paper4 _ =
+  check_and_run (expr {|
+    let inc : * = (lam (x : *). (x : * => int) + 1 : int => *) : *->* => * in
+    let two : * = (lam (f : *). (lam (x : *). (f : * => *->*) ((f : * => *->*) x)) : *->* => *) : *->* => * in
+    ((((two : * => *->*) inc) : * => *->*) (0 : int => *)) : * => int
+    |}) 2
 
 let assert_raises_typeerror (f : unit -> 'a) : unit =
   FTAL.(try (f (); assert_failure "didn't raise an exception")
@@ -121,6 +128,7 @@ let suite = "FTAL evaluations" >:::
               "F: paper #1" >:: test_paper1;
               "F: paper #2" >:: test_paper2;
               "F: paper #3" >:: test_paper3;
+              "F: paper #4a" >:: test_paper4a;
               "F: paper #4" >:: test_paper4;
               "Example roundtrips" >:: test_examples;
             ]
