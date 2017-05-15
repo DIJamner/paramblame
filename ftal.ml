@@ -468,7 +468,7 @@ module Lang = struct
       | Error s -> Error s)
     | PairExp (e1, e2) ->
       let to1 = expType s te env e1 in
-      let to2 = expType s te env e1 in
+      let to2 = expType s te env e2 in
       (match (to1,to2) with
         | (Ok t1, Ok t2) -> Ok (PairTy (t1, t2))
         | (Error s, _) -> Error s
