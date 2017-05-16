@@ -622,17 +622,18 @@ module Lang = struct
     | CastExp (CastExp (v, BoolTy, lbl1, AnyTy), AnyTy, lbl2, BoolTy)
     | CastExp (CastExp (v, FunTy (AnyTy, AnyTy), lbl1, AnyTy), 
                           AnyTy, lbl2, FunTy (AnyTy, AnyTy)) -> Some v
-    | CastExp (CastExp (v, NameTy a, lbl1, AnyTy), AnyTy, lbl2, NameTy a') ->
-      if a = a' then Some v else Some (BlameExp (lbl2, NameTy a'))
-    | CastExp (CastExp (v, _, lbl1, AnyTy), AnyTy, lbl2, b) -> Some (BlameExp (lbl2, b))
+    | CastExp (CastExp (v, NameTy a, lbl1, AnyTy), AnyTy, lbl2, NameTy a') 
+      when a = a' -> Some v
+    | CastExp (CastExp (v, a, lbl1, AnyTy), AnyTy, lbl2, b) 
+      when isGroundTy a && isGroundTy b -> Some (BlameExp (lbl2, b))
     | CastExp (v, FunTy (AnyTy, AnyTy), lbl, AnyTy) -> None
     | CastExp (v, FunTy (a, b), lbl, AnyTy) -> 
       Some (CastExp (CastExp (v, FunTy (a, b), lbl, FunTy (AnyTy, AnyTy)),
                           FunTy (AnyTy, AnyTy), lbl, AnyTy))
     | CastExp (v, AnyTy, lbl, FunTy (AnyTy, AnyTy)) -> None
     | CastExp (v, AnyTy, lbl, FunTy (a, b)) -> 
-      Some (CastExp (CastExp (v, FunTy (a, b), lbl, FunTy (AnyTy, AnyTy)),
-                          FunTy (AnyTy, AnyTy), lbl, AnyTy))
+      Some (CastExp (CastExp (v, AnyTy, lbl, FunTy (AnyTy, AnyTy)),
+                          FunTy (AnyTy, AnyTy), lbl, FunTy (a, b)))
     | _ -> None (* TODO: check this! *)
      
     (* Assumptions: 
