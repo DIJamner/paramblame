@@ -14,8 +14,6 @@
       <h3>Amal Ahmed, Dustin Jamner, Jeremy Siek, Philip Wadler</h3>
       <h4>To appear at the International Conference on Functional Programming (ICFP) 2017.</h4>
 
-      <!-- <h3>Draft <a href="https://dbp.io/pubs/2017/funtal.pdf">paper</a> and <a href="https://dbp.io/pubs/2017/funtal-tr.pdf">technical appendix</a>.</h3> -->
-
       <p>The polymorphic blame calculus integrates static typing, including universal types, with dynamic typing. The primary challenge with this integration is preserving parametricity: even dynamically-typed code should satisfy it once it has been cast to a universal type. Ahmed et al. (2011) employ runtime type generation in the polymorphic blame calculus to preserve parametricity, but a proof that it does so has been elusive. Matthews and Ahmed (2008) gave a proof of parametricity for a closely related system that combines ML and Scheme, but later found a flaw in their proof. In this paper we prove that the polymorphic blame calculus satisfies relational parametricity. The proof relies on a step-indexed Kripke logical relation. The step-indexing is required to make the logical relation well-defined in the case for the dynamic type. The possible worlds include the mapping of generated type names to their concrete types and the mapping of type names to relations. We prove the Fundamental Property of this logical relation and that it is sound with respect to contextual equivalence. To demonstrate the utility of parametricity in the polymorphic blame calculus, we derive two free theorems.</p>
 
       <hr/>
@@ -25,30 +23,17 @@
       <h4>Source code and build instructions: <a href="https://github.com/dijamner/paramblame">github.com/dijamner/paramblame</a></h4>
 
       <p>
-        TODO: description of artifact
-        <!-- We present a type checker and stepper for the FunTAL machine
-          semantics. We include <strong>well-typed, runnable examples
-          from
-          the <a href="https://dbp.io/pubs/2017/funtal.pdf">paper</a></strong>,
-        as well as a few smaller examples to start with. With our
-        artifact, you write programs and then type check / load them
-        into a FunTAL machine. You can then step forward and backwards
-        through the evaluation. At each step, the machine shows the
-        registers, stack, and heap, as well as the redex and the
-        context.</p>
-
-      <p>
-        <strong>Important:</strong> the programs entered
-        into the editor should be Fun programs at the top; a pure
-        TAL component <code>C</code>
-        can be embedded as <code>FT[t,?]C</code> where <code>t</code> is
-        the return type, as we see in examples below. We do this so
-        that all programs run through the stepper have a return value. -->
+        We present a type checker and stepper for the Polymorphic Blame Calculus.
+        Programs written in the code box below may be typechecked and, if they pass,
+        loaded into the stepper. Programs in the stepper are split into redex and context
+        and may be evaluated either one step at a time or 100 steps at a time.
+        The global name store is also displayed.
+        Additionally, our artifact includes a step backwards button that reverses the last step taken.
       </p>
 
       <p><strong>Note:</strong> there are some syntactic differences
         from the presentation in
-        the <a href="#">paper</a>,
+        the paper,
         which nonetheless we expect will be the primary reference for
         the language. These changes were made to eliminate the
         necessity of unicode, reduce ambiguity in the grammar, and
@@ -62,13 +47,13 @@
         <li><a href="#" id="swap_int_bool">Swap Int-Bool</a> (middle, pg. 3)</li>
         <li><a href="#" id="swap_bool_int">Swap Bool-Int</a> (middle, pg. 3)</li>
         <li><a href="#" id="bad_swap">BadSwap</a> (top, pg. 6)</li>
-        <li><a href="#" id="factorial">Factorial</a> (Fig. 17, top, pg. _)</li>
       </ul>
 
       <p>
         <strong>Additional examples:</strong>
         | <a href="#" id="simple">Simple call</a>
         | <a href="#" id="omega">Omega</a>
+        | <a href="#" id="factorial">Factorial</a> 
       </p>
 
       <p>
