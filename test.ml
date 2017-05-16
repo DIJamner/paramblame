@@ -74,7 +74,8 @@ let test_equal_false _ =
   check_and_run (expr "if (1 = 2) then 0 else 1") 1
 
 let test_paper1 _ =
-  check_and_run (expr "let p : <int,<int->int,int->bool>> = <0, <lam (x : int). 1 - x, lam (x : int). x = 0> > in (pi1 (pi2 p)) (pi1 p)") 1
+  check_and_run (expr {|let p : <int,<int->int,int->bool>>  =  <0, <lam (x : int). 1 - x, lam (x : int). x = 0>> 
+                        in (pi1 (pi2 p)) (pi1 p)|}) 1
 
 let test_paper2 _ =
   check_and_run (expr "pi2 ((Lam X. Lam Y. lam (p : <X,Y>). < pi2 p, pi1 p >) [int] [bool] <1, true>)") 1
@@ -95,6 +96,20 @@ let test_paper4 _ =
     let two : * = (lam (f : *). (lam (x : *). (f : * => *->*) ((f : * => *->*) x)) : *->* => *) : *->* => * in
     ((((two : * => *->*) inc) : * => *->*) (0 : int => *)) : * => int
     |}) 2
+
+let test_paper5 _ =
+  check_and_run (expr {|
+    let inc : * = (lam (x : *). (x : * => int) + 1 : int => *) : *->* => * in
+    let two : * = (Lam X.lam(f:X->X).lam(x:X). f (f x)) : forall X. (X->X)->X->X => * in
+    ((((two : * => *->*) inc) : * => *->*) (0 : int => *)) : * => int
+    |}) 2
+
+let test_subst1 _ =
+  check_and_run (expr "(Lam X. lam (x:X). Lam X. lam (x:X). x) [bool] true [int] 0 ") 0
+
+let test_subst2 _ =
+  check_and_run (expr "(Lam X. lam (f:forall X. X -> X). f [int] 42) [bool] (Lam Y. lam(y:Y). y)") 42
+
 
 let assert_raises_typeerror (f : unit -> 'a) : unit =
   FTAL.(try (f (); assert_failure "didn't raise an exception")
@@ -130,6 +145,9 @@ let suite = "FTAL evaluations" >:::
               "F: paper #3" >:: test_paper3;
               "F: paper #4a" >:: test_paper4a;
               "F: paper #4" >:: test_paper4;
+              "F: paper #5" >:: test_paper5;
+              "F: subst #1" >:: test_subst1;
+              "F: subst #2" >:: test_subst2;
               "Example roundtrips" >:: test_examples;
             ]
 

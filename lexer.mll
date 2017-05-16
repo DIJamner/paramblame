@@ -45,6 +45,8 @@ rule token = parse
   | "in" { IN }
   | "pi1" { PI1 }
   | "pi2" { PI2 }
+  | "fst" { PI1 }
+  | "snd" { PI2 }
   | "=" { EQUAL }
   | "+" { PLUS }
   | "-" { MINUS }
