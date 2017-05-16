@@ -388,7 +388,7 @@ module Lang = struct
 
   let rec bindingInStore (n, a) s = match s with
     | [] -> false
-    | ((n',a')::tl) -> (n = n' && ty_eq a a') || bindingInStore (n, a) s
+    | ((n',a')::tl) -> (n = n' && ty_eq a a') || bindingInStore (n, a) tl
 
   let rec storeWf s = match s with
     | [] -> true
