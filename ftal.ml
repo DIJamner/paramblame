@@ -504,9 +504,11 @@ module Lang = struct
         |  (_, Error s) -> Error s)
     | Proj1Exp e' -> (match expType s te env e' with
       | Ok (PairTy (a, b)) -> Ok a 
+      | Ok t -> Error (!^"Expected a pair, but" ^^space^^ p_exp e' ^^space^^ !^"is a"^^space^^ p_ty t)
       | Error s -> Error s)
     | Proj2Exp e' -> (match expType s te env e' with
       | Ok (PairTy (a, b)) -> Ok b
+      | Ok t -> Error (!^"Expected a pair, but" ^^space^^ p_exp e' ^^space^^ !^"is a"^^space^^ p_ty t)
       | Error s -> Error s)
     | ConvExp (e', t1, lbl, t2) -> 
       (match expWf s te env e' t1 with
@@ -672,8 +674,9 @@ module Lang = struct
     if isBlame p then None else (* Blame does not step *)
       let (p', evl) = decompose p in
       match p' with
-        | BlameExp (lbl, _) -> let Ok(t) = expType s [] [] p in (* TODO: capture errors! *)
-          Some (s, BlameExp (lbl, t)) (* However blame in a context does *)
+        | BlameExp (lbl, _) -> (match expType s [] [] p with
+          | Ok(t) -> Some (s, BlameExp (lbl, t)) (* However blame in a context does *)
+          | Error(s) -> None) (* TODO: capture errors! *)
         | _ -> (match storeStepRedex (s,p') with
           | Some (s',p'') -> Some (s', plug evl p'')
           | None -> None)
