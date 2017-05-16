@@ -96,6 +96,12 @@ let test_paper4 _ =
     ((((two : * => *->*) inc) : * => *->*) (0 : int => *)) : * => int
     |}) 2
 
+let test_function_cast _ =
+  check_and_run (expr {|
+    let id : * -> * = lam (x: * ).x in
+    (id : * -> * => * : * => int -> int) 4
+  |}) 4
+
 let assert_raises_typeerror (f : unit -> 'a) : unit =
   FTAL.(try (f (); assert_failure "didn't raise an exception")
         with TypeError _  -> ())
@@ -130,6 +136,7 @@ let suite = "FTAL evaluations" >:::
               "F: paper #3" >:: test_paper3;
               "F: paper #4a" >:: test_paper4a;
               "F: paper #4" >:: test_paper4;
+              "F: function cast" >:: test_function_cast;
               "Example roundtrips" >:: test_examples;
             ]
 
