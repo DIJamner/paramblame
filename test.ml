@@ -1,7 +1,6 @@
 open OUnit2;;
 open Ftal;;
 open Examples;;
-let expr str = Parse.parse_string Parse.expression_eof str
 
 let roundtrip ?source comp =
   let orig, roundtrip =
@@ -66,9 +65,9 @@ let test1 _ =
 let test_app _ =
     check_and_run (expr "(lam (x:int). x + x) 1") 2
 
-let test_factorial_f _ =
+let test_factorial _ =
   lang_assert_eint
-    (snd (Lang.run ([], Lang.(AppExp (Examples.factorial_f, IntExp 3)))))
+    (snd (Lang.run ([], Lang.(AppExp (Examples.factorial, IntExp 3)))))
     6
 
 let test_let _ =
@@ -87,10 +86,10 @@ let test_paper1 _ =
                         in (pi1 (pi2 p)) (pi1 p)|}) 1
 
 let test_paper2 _ =
-  check_and_run (expr "pi2 ((Lam X. Lam Y. lam (p : <X,Y>). < pi2 p, pi1 p >) [int] [bool] <1, true>)") 1
+  check_and_run Examples.swap_int_bool 1
 
 let test_paper3 _ =
-  check_and_run (expr "pi1 ((Lam X. Lam Y. lam (p : <X,Y>). < pi2 p, pi1 p >) [bool] [int] <true, 1>)") 1
+  check_and_run Examples.swap_bool_int 1
 
 let test_paper4a _ =
   check_and_run (expr {|
@@ -179,10 +178,10 @@ let assert_raises_typeerror (f : unit -> 'a) : unit =
         with TypeError _  -> ())
 
 
-let test_factorial_f_ty _ =
+let test_factorial_ty _ =
   assert_equal
-    (Lang.expType [] [] [] factorial_f)
-    (Ok Lang.(FunTy (IntTy, IntTy)))
+    (Lang.expType [] [] [] factorial)
+    (Ok Lang.IntTy)
 
 
 let test_examples _ =
@@ -190,37 +189,37 @@ let test_examples _ =
     let reparsed = Parse.parse_string Parse.expression_eof (Ftal.Lang.show_exp expr) in
     let rereparsed = Parse.parse_string Parse.expression_eof (Ftal.Lang.show_exp reparsed) in
     assert_equal reparsed rereparsed in
-  assert_roundtrip Examples.factorial_f;
+  assert_roundtrip Examples.factorial;
   ()
 
-let suite = "FTAL evaluations" >:::
+let suite = "Polymorphic Blame Calculus evaluations" >:::
             [
-              "F: 1 + 1 = 2 : int" >:: test1;
-              "F: (lam x. x + x) 1 = 2" >:: test_app;
+              "1 + 1 = 2 : int" >:: test1;
+              "(lam x. x + x) 1 = 2" >:: test_app;
               (* "parse (5)" >:: test_parse5; TODO: should be removed? *)
-              (*"F: fact 3 = 6" >:: test_factorial_f;*)
-	      "F: fact : int -> int" >:: test_factorial_f_ty;
-	      "F: let x : int = 3 in 2 + x" >:: test_let;
-	      "F: 2 = 2" >:: test_equal_true;
-              "F: 1 = 2" >:: test_equal_false;
-              "F: paper #1" >:: test_paper1;
-              "F: paper #2" >:: test_paper2;
-              "F: paper #3" >:: test_paper3;
-              "F: paper #4a" >:: test_paper4a;
-              "F: paper #4" >:: test_paper4;
-              "F: paper #5(a)" >:: test_paper5a;
-              "F: paper #5(b)" >:: test_paper5b;
-              "F: paper #5(c)" >:: test_paper5c;
-              "F: paper #5(d)" >:: test_paper5d;
-              "F: paper #6" >:: test_paper6;
-              "F: paper #7" >:: test_paper7;
-              "F: paper #8" >:: test_paper8;
-              "F: paper #9" >:: test_paper9;
-              "F: paper #10(a)" >:: test_paper10a;
-              "F: paper #10(b)" >:: test_paper10b;
-              "F: subst #1" >:: test_subst1;
-              "F: subst #2" >:: test_subst2;
-              "F: function cast" >:: test_function_cast;
+              (*"fact 3 = 6" >:: test_factorial;*)
+	      "(fact 4) : int " >:: test_factorial_ty;
+	      "let x : int = 3 in 2 + x" >:: test_let;
+	      "2 = 2" >:: test_equal_true;
+              "1 = 2" >:: test_equal_false;
+              "paper #1" >:: test_paper1;
+              "paper #2" >:: test_paper2;
+              "paper #3" >:: test_paper3;
+              "paper #4a" >:: test_paper4a;
+              "paper #4" >:: test_paper4;
+              "paper #5(a)" >:: test_paper5a;
+              "paper #5(b)" >:: test_paper5b;
+              "paper #5(c)" >:: test_paper5c;
+              "paper #5(d)" >:: test_paper5d;
+              "paper #6" >:: test_paper6;
+              "paper #7" >:: test_paper7;
+              "paper #8" >:: test_paper8;
+              "paper #9" >:: test_paper9;
+              "paper #10(a)" >:: test_paper10a;
+              "paper #10(b)" >:: test_paper10b;
+              "subst #1" >:: test_subst1;
+              "subst #2" >:: test_subst2;
+              "function cast" >:: test_function_cast;
               "Example roundtrips" >:: test_examples;
             ]
 
