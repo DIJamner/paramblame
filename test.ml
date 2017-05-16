@@ -145,7 +145,7 @@ let test_paper8 _ =
   check_and_run (expr "((lam(x:*). (x:*=>int)+1 : int=>*) : *->* => * : * => int->int) 2") 3
 
 let test_paper9 _ =
-  check_and_blame (expr "pi1 (((lam(x:*).x) : *->* => * : * => forall X. forall Y. <X,Y> -> <Y,X>) [int] [int] <1,2>)")
+  check_and_blame bad_swap
 
 let test_paper10a _ =
   check_and_run (expr {|
@@ -181,7 +181,7 @@ let assert_raises_typeerror (f : unit -> 'a) : unit =
 let test_factorial_ty _ =
   assert_equal
     (Lang.expType [] [] [] factorial)
-    (Ok Lang.IntTy)
+    (Ok Lang.(FunTy (IntTy, IntTy)))
 
 
 let test_examples _ =
@@ -198,7 +198,7 @@ let suite = "Polymorphic Blame Calculus evaluations" >:::
               "(lam x. x + x) 1 = 2" >:: test_app;
               (* "parse (5)" >:: test_parse5; TODO: should be removed? *)
               (*"fact 3 = 6" >:: test_factorial;*)
-	      "(fact 4) : int " >:: test_factorial_ty;
+	      "fact : int -> int" >:: test_factorial_ty;
 	      "let x : int = 3 in 2 + x" >:: test_let;
 	      "2 = 2" >:: test_equal_true;
               "1 = 2" >:: test_equal_false;

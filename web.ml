@@ -160,6 +160,7 @@ let _ =
   set_click "factorial" (ehandle factorial);
   set_click "swap_int_bool" (ehandle @@ Ftal.Lang.show_exp Examples.swap_int_bool);
   set_click "swap_bool_int" (ehandle @@ Ftal.Lang.show_exp Examples.swap_bool_int);
+  set_click "bad_swap" (ehandle @@ Ftal.Lang.show_exp Examples.bad_swap);
   set_click "simple" (ehandle simple);
   set_click "omega" (ehandle omega);
   set_editor simple;

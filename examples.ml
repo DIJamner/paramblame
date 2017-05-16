@@ -17,4 +17,7 @@ let swap_bool_int = expr {|
   pi1 ((Lam X. Lam Y. lam (p : <X,Y>). < pi2 p, pi1 p >) [bool] [int] <true, 1>)
 |}
 
+let bad_swap = expr {|
+  pi1 (((lam(x:*).x) : *->* => * : * => forall X. forall Y. <X,Y> -> <Y,X>) [int] [int] <1,2>)
+|}
 
