@@ -9,19 +9,19 @@
 
   <body>
     <div class="holder">
-      <h1>UNDER CONSTRUCTION: Theorems for Free for Free...</h1>
+      <h1>Theorems for Free for Free: Parametricity, With and Without Types</h1>
 
       <h3>Amal Ahmed, Dustin Jamner, Jeremy Siek, Philip Wadler</h3>
       <h4>To appear at the International Conference on Functional Programming (ICFP) 2017.</h4>
 
       <!-- <h3>Draft <a href="https://dbp.io/pubs/2017/funtal.pdf">paper</a> and <a href="https://dbp.io/pubs/2017/funtal-tr.pdf">technical appendix</a>.</h3> -->
 
-      <p>TODO: description of paper</p>
+      <p>The polymorphic blame calculus integrates static typing, including universal types, with dynamic typing. The primary challenge with this integration is preserving parametricity: even dynamically-typed code should satisfy it once it has been cast to a universal type. Ahmed et al. (2011) employ runtime type generation in the polymorphic blame calculus to preserve parametricity, but a proof that it does so has been elusive. Matthews and Ahmed (2008) gave a proof of parametricity for a closely related system that combines ML and Scheme, but later found a flaw in their proof. In this paper we prove that the polymorphic blame calculus satisfies relational parametricity. The proof relies on a step-indexed Kripke logical relation. The step-indexing is required to make the logical relation well-defined in the case for the dynamic type. The possible worlds include the mapping of generated type names to their concrete types and the mapping of type names to relations. We prove the Fundamental Property of this logical relation and that it is sound with respect to contextual equivalence. To demonstrate the utility of parametricity in the polymorphic blame calculus, we derive two free theorems.</p>
 
       <hr/>
 
-      <h2>Artifact: a LambdaB type checker and small-step machine.</h2>
-      <h3>Dustin Jamner</h3>
+      <h2>Artifact: a type checker and small-step machine for the Polymorphic Blame Calculus.</h2>
+      <h3>Dustin Jamner, Jeremy Siek</h3>
       <h4>Source code and build instructions: <a href="https://github.com/dijamner/paramblame">github.com/dijamner/paramblame</a></h4>
 
       <p>
@@ -48,7 +48,7 @@
 
       <p><strong>Note:</strong> there are some syntactic differences
         from the presentation in
-        the <a href="https://dbp.io/pubs/2017/funtal.pdf">paper</a>,
+        the <a href="#">paper</a>,
         which nonetheless we expect will be the primary reference for
         the language. These changes were made to eliminate the
         necessity of unicode, reduce ambiguity in the grammar, and
