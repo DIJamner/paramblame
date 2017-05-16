@@ -157,6 +157,9 @@ let _ =
   set_click "prev" (H.handler prev);
   set_click "many" (H.handler many);
   hide_machine ();
+  set_click "factorial" (ehandle factorial);
+  set_click "swap_int_bool" (ehandle @@ Ftal.Lang.show_exp Examples.swap_int_bool);
+  set_click "swap_bool_int" (ehandle @@ Ftal.Lang.show_exp Examples.swap_bool_int);
   set_click "simple" (ehandle simple);
   set_click "omega" (ehandle omega);
   set_editor simple;
