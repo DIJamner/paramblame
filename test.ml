@@ -173,10 +173,12 @@ let test_function_cast _ =
     (id : * -> * => * : * => int -> int) 4
   |}) 4
 
-let assert_raises_typeerror (f : unit -> 'a) : unit =
-  FTAL.(try (f (); assert_failure "didn't raise an exception")
-        with TypeError _  -> ())
+let assert_raises_typeerror = function
+  | Ok t -> assert_failure "didn't raise an exception"
+  | Error _ -> ()
 
+let test_invalid_cast_ty _ =
+  assert_raises_typeerror (Ftal.Lang.expType [] [] [] invalid_cast)
 
 let test_factorial_ty _ =
   assert_equal

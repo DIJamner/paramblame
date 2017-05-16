@@ -21,3 +21,7 @@ let bad_swap = expr {|
   pi1 (((lam(x:*).x) : *->* => * : * => forall X. forall Y. <X,Y> -> <Y,X>) [int] [int] <1,2>)
 |}
 
+let invalid_cast = expr {|
+  (lam (x : int) . x : int => bool) 5
+|}
+
