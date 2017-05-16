@@ -47,9 +47,18 @@ let lang_assert_eint e n =
   | Lang.IntExp x -> assert_equal x n
   | _ -> assert_failure "not equal"
 
+let lang_assert_blame e =
+  match e with
+  | Lang.BlameExp (l, t) -> ()
+  | _ -> assert_failure "error, expected blame"
+
 let check_and_run p r =
    assert_equal (Lang.expType [] [] [] p) (Ok Lang.IntTy);
    lang_assert_eint (snd (Lang.run ([], p))) r
+
+let check_and_blame p =
+   assert_equal (Lang.expType [] [] [] p) (Ok Lang.IntTy);
+   lang_assert_blame (snd (Lang.run ([], p)))
 
 let test1 _ =
     check_and_run (expr "1 + 1") 2
@@ -97,12 +106,47 @@ let test_paper4 _ =
     ((((two : * => *->*) inc) : * => *->*) (0 : int => *)) : * => int
     |}) 2
 
-let test_paper5 _ =
+let test_paper5a _ =
   check_and_run (expr {|
     let inc : * = (lam (x : *). (x : * => int) + 1 : int => *) : *->* => * in
     let two : * = (Lam X.lam(f:X->X).lam(x:X). f (f x)) : forall X. (X->X)->X->X => * in
     ((((two : * => *->*) inc) : * => *->*) (0 : int => *)) : * => int
     |}) 2
+
+let test_paper5b _ =
+  check_and_blame (expr {|
+    let inc : * = (lam (x : *). (x : * => int) + 1 : int => *) : *->* => * in
+    let two : * = (Lam X.lam(f:X->X).lam(x:X). f (f x)) : forall X. (X->X)->X->X => * in
+    ((((two : * => *->*) (0 : int => *)) : * => *->*) inc) : * => int
+    |}) 
+
+let test_paper5c _ =
+  check_and_run (expr {|
+    let inc : int->int = (lam (x : int). x + 1) in
+    let twos : * = (lam (f : *). (lam (x : *). (f : * => *->*) ((f : * => *->*) x)) : *->* => *) : *->* => * in
+    let two : forall X. (X->X)->X->X = (twos : * => forall X. (X->X)->X->X) in
+    two [int] inc 0
+    |}) 2
+
+let test_paper5d _ =
+  check_and_blame (expr {|
+    let inc : int->int = (lam (x : int). x + 1) in
+    let twos : * = (lam (f : *). (lam (x : *). 2 : int => *) : *->* => *) : *->* => * in
+    let two : forall X. (X->X)->X->X = (twos : * => forall X. (X->X)->X->X) in
+    two [int] inc 0
+    |})
+
+let test_paper6 _ =
+  check_and_run (expr "2 : int => * : * => int") 2
+
+let test_paper7 _ =
+  check_and_blame (expr "2 : int => * : * => int->int : int->int => * : * => int")
+
+let test_paper8 _ =
+  check_and_run (expr "((lam(x:*). (x:*=>int)+1 : int=>*) : *->* => * : * => int->int) 2") 3
+
+let test_paper9 _ =
+  check_and_blame (expr "pi1 (((lam(x:*).x) : *->* => * : * => forall X. forall Y. <X,Y> -> <Y,X>) [int] [int] <1,2>)")
 
 let test_subst1 _ =
   check_and_run (expr "(Lam X. lam (x:X). Lam X. lam (x:X). x) [bool] true [int] 0 ") 0
@@ -150,7 +194,14 @@ let suite = "FTAL evaluations" >:::
               "F: paper #3" >:: test_paper3;
               "F: paper #4a" >:: test_paper4a;
               "F: paper #4" >:: test_paper4;
-              "F: paper #5" >:: test_paper5;
+              "F: paper #5(a)" >:: test_paper5a;
+              "F: paper #5(b)" >:: test_paper5b;
+              "F: paper #5(c)" >:: test_paper5c;
+              "F: paper #5(d)" >:: test_paper5d;
+              "F: paper #6" >:: test_paper6;
+              "F: paper #7" >:: test_paper7;
+              "F: paper #8" >:: test_paper8;
+              "F: paper #9" >:: test_paper9;
               "F: subst #1" >:: test_subst1;
               "F: subst #2" >:: test_subst2;
               "F: function cast" >:: test_function_cast;

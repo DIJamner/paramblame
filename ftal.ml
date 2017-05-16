@@ -49,6 +49,7 @@ module Lang = struct
     | IntTy -> true
     | BoolTy -> true
     | FunTy (AnyTy, AnyTy) -> true
+    | PairTy (AnyTy, AnyTy) -> true
     | NameTy _ -> true
     | _ -> false 
 
@@ -634,6 +635,14 @@ module Lang = struct
     | CastExp (v, AnyTy, lbl, FunTy (a, b)) -> 
       Some (CastExp (CastExp (v, AnyTy, lbl, FunTy (AnyTy, AnyTy)),
                           FunTy (AnyTy, AnyTy), lbl, FunTy (a, b)))
+    | CastExp (v, PairTy (AnyTy, AnyTy), lbl, AnyTy) -> None
+    | CastExp (v, PairTy (a, b), lbl, AnyTy) -> 
+      Some (CastExp (CastExp (v, PairTy (a, b), lbl, PairTy (AnyTy, AnyTy)),
+                          PairTy (AnyTy, AnyTy), lbl, AnyTy))
+    | CastExp (v, AnyTy, lbl, PairTy (AnyTy, AnyTy)) -> None
+    | CastExp (v, AnyTy, lbl, PairTy (a, b)) -> 
+      Some (CastExp (CastExp (v, AnyTy, lbl, PairTy (AnyTy, AnyTy)),
+                          PairTy (AnyTy, AnyTy), lbl, PairTy (a, b)))
     | _ -> None (* TODO: check this! *)
      
     (* Assumptions: 
