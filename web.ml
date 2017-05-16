@@ -162,6 +162,7 @@ let _ =
   set_click "swap_bool_int" (ehandle @@ Ftal.Lang.show_exp Examples.swap_bool_int);
   set_click "bad_swap" (ehandle @@ Ftal.Lang.show_exp Examples.bad_swap);
   set_click "invalid_cast" (ehandle @@ Ftal.Lang.show_exp Examples.invalid_cast);
+  set_click "no_cast" (ehandle @@ Ftal.Lang.show_exp Examples.no_cast);
   set_click "simple" (ehandle simple);
   set_click "omega" (ehandle omega);
   set_editor simple;

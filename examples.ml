@@ -25,3 +25,7 @@ let invalid_cast = expr {|
   (lam (x : int) . x : int => bool) 5
 |}
 
+let no_cast = expr {|
+  (lam (x : *) . x : * => int) 5
+|}
+
