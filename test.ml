@@ -110,6 +110,11 @@ let test_subst1 _ =
 let test_subst2 _ =
   check_and_run (expr "(Lam X. lam (f:forall X. X -> X). f [int] 42) [bool] (Lam Y. lam(y:Y). y)") 42
 
+let test_function_cast _ =
+  check_and_run (expr {|
+    let id : * -> * = lam (x: * ).x in
+    (id : * -> * => * : * => int -> int) 4
+  |}) 4
 
 let assert_raises_typeerror (f : unit -> 'a) : unit =
   FTAL.(try (f (); assert_failure "didn't raise an exception")
@@ -148,6 +153,7 @@ let suite = "FTAL evaluations" >:::
               "F: paper #5" >:: test_paper5;
               "F: subst #1" >:: test_subst1;
               "F: subst #2" >:: test_subst2;
+              "F: function cast" >:: test_function_cast;
               "Example roundtrips" >:: test_examples;
             ]
 
