@@ -133,7 +133,7 @@ module Lang = struct
     | IntExp n -> !^(string_of_int n)
     | BoolExp true -> !^"true"
     | BoolExp false -> !^"false"
-    | PairExp (e1,e2) -> langle ^^ (p_exp e1) ^^ comma ^/^ (p_exp e2) ^^ rangle
+    | PairExp (e1,e2) -> group (langle ^^ p_exp e1 ^^ comma ^/^ p_exp e2 ^^ rangle)
     | Proj1Exp e -> !^"pi1" ^^ space ^^ p_simple_exp e
     | Proj2Exp e -> !^"pi2" ^^ space ^^ p_simple_exp e
     | BlameExp (_, t) -> !^"blame" ^/^ colon ^^ space ^^ p_ty t
@@ -188,8 +188,8 @@ module Lang = struct
     | CtxHole -> !^"[.]"
     | Proj1Ctx c -> !^"pi1" ^^ space ^^ p_ctx c
     | Proj2Ctx c -> !^"pi2" ^^ space ^^ p_ctx c 
-    | PairCtx1 (c,e2) -> langle ^^ group (p_ctx c) ^^ comma ^/^ group (p_exp e2) ^^ rangle
-    | PairCtx2 (e1,c) -> langle ^^ group (p_exp e1) ^^ comma ^/^ group (p_ctx c) ^^ rangle
+    | PairCtx1 (c,e2) -> group (langle ^^ p_ctx c ^^ comma ^/^ p_exp e2 ^^ rangle)
+    | PairCtx2 (e1,c) -> group (langle ^^ p_exp e1 ^^ comma ^/^ p_ctx c ^^ rangle)
     | _ -> parens (p_ctx c))
     
   and p_app_ctx (c : evalctx) : document = nest 2 (match c with
