@@ -148,6 +148,20 @@ let test_paper8 _ =
 let test_paper9 _ =
   check_and_blame (expr "pi1 (((lam(x:*).x) : *->* => * : * => forall X. forall Y. <X,Y> -> <Y,X>) [int] [int] <1,2>)")
 
+let test_paper10a _ =
+  check_and_run (expr {|
+    let Ks : * = (lam(x:*). (lam(y:*). x) : *->* => *) : *->* => * in
+    let K : forall X. forall Y. X->Y->X = Ks : * => forall X. forall Y. X->Y->X in
+    K [int] [bool] 42 false
+    |}) 42
+
+let test_paper10b _ =
+  check_and_blame (expr {|
+    let Ks : * = (lam(x:*). (lam(y:*). y) : *->* => *) : *->* => * in
+    let K : forall X. forall Y. X->Y->X = Ks : * => forall X. forall Y. X->Y->X in
+    K [int] [bool] 42 false
+    |}) 
+
 let test_subst1 _ =
   check_and_run (expr "(Lam X. lam (x:X). Lam X. lam (x:X). x) [bool] true [int] 0 ") 0
 
@@ -202,6 +216,8 @@ let suite = "FTAL evaluations" >:::
               "F: paper #7" >:: test_paper7;
               "F: paper #8" >:: test_paper8;
               "F: paper #9" >:: test_paper9;
+              "F: paper #10(a)" >:: test_paper10a;
+              "F: paper #10(b)" >:: test_paper10b;
               "F: subst #1" >:: test_subst1;
               "F: subst #2" >:: test_subst2;
               "F: function cast" >:: test_function_cast;
