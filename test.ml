@@ -81,6 +81,14 @@ let test_equal_true _ =
 let test_equal_false _ =
   check_and_run (expr "if (1 = 2) then 0 else 1") 1
 
+let test_exists _ =
+  check_and_run (expr {|
+  let p : exists X. <X,X->bool> =
+      (pack int, <0,lam(x:int).x=0> in X. <X,X->bool>) in
+  unpack[<X,X->bool>,int] X,x = p in
+  if (snd x) (fst x) then 42 else 0
+  |}) 42
+
 let test_paper1 _ =
   check_and_run (expr {|let p : <int,<int->int,int->bool>>  =  <0, <lam (x : int). 1 - x, lam (x : int). x = 0>> 
                         in (pi1 (pi2 p)) (pi1 p)|}) 1
@@ -204,6 +212,7 @@ let suite = "Polymorphic Blame Calculus evaluations" >:::
 	      "let x : int = 3 in 2 + x" >:: test_let;
 	      "2 = 2" >:: test_equal_true;
               "1 = 2" >:: test_equal_false;
+	      "exists #1" >:: test_exists;
               "paper #1" >:: test_paper1;
               "paper #2" >:: test_paper2;
               "paper #3" >:: test_paper3;

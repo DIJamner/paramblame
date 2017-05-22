@@ -33,6 +33,7 @@ rule token = parse
   | "[" { LBRACKET }
   | "]" { RBRACKET }
   | "forall" { FORALL }
+  | "exists" { EXISTS }
   | "{" { LBRACKET }
   | "}" { RBRACKET }
   | ":" { COLON }
@@ -53,6 +54,8 @@ rule token = parse
   | "*" { TIMES }
   | "lam"  { LAMBDA }
   | "Lam"  { BIGLAMBDA }
+  | "pack"  { PACK }
+  | "unpack"  { UNPACK }
   | "->" { ARROW }
   | "=>" { CAST }
   | "blame" { BLAME }

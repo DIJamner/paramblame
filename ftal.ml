@@ -76,7 +76,7 @@ module Lang = struct
     | BoolExp _ -> true
     | LamExp _ -> true
     | AbstrExp (_, e) -> isValue e (* Is a value iff syntactically wf *)
-    | PairExp _ -> true
+    | PairExp (e1,e2) -> isValue e1 && isValue e2
     | ConvExp (e, FunTy _, _, FunTy _) -> isValue e
     | ConvExp (e, ForallTy _, _, ForallTy _) -> isValue e
     | ConvExp (e, _, NegConvLbl a,  NameTy b) -> a = b && isValue e
@@ -542,7 +542,7 @@ module Lang = struct
     | IfExp (c, e1, e2) -> if isValue c
       then (p, CtxHole)
       else let (c', ctx) = decompose c in
-        (c, IfCtx (ctx, e1, e2))
+        (c', IfCtx (ctx, e1, e2))
     | AppExp (e1, e2) -> (match (isValue e1, isValue e2) with
       | (false, _) ->
         let (e1', ctx) = decompose e1 in

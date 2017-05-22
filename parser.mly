@@ -1,9 +1,9 @@
 %token PLUS MINUS TIMES EQUAL /* these are the binary symbols */
-%token FORALL BLAME
+%token FORALL EXISTS BLAME
 %token INT BOOL
 %token LANGLE RANGLE LBRACKET RBRACKET LPAREN RPAREN
 %token DOT COMMA COLON ARROW CAST
-%token LAMBDA BIGLAMBDA IF THEN ELSE LET IN PI1 PI2
+%token LAMBDA BIGLAMBDA PACK UNPACK IF THEN ELSE LET IN PI1 PI2
 %token<string> A_IDENTIFIER OTHER_IDENTIFIER CAP_IDENTIFIER
 %token TRUE FALSE
 %token<int> INTEGER
@@ -53,6 +53,10 @@ typ:
 /* TODO: enable removing parens where possible */
 | t1=simple_typ ARROW t2=typ { FunTy (t1, t2) }
 | FORALL x=identifier DOT t=typ { ForallTy (x, t) }
+| EXISTS x=identifier DOT t=typ {
+  let y = "Y" in
+  ForallTy (y, FunTy (ForallTy (x, FunTy (t,VarTy y)), VarTy y))
+}
 | t=simple_typ { t }
 
 simple_expression:
@@ -92,6 +96,17 @@ expression:
 | LET x=term_variable COLON t=typ EQUAL rhs=expression IN body=expression
   { AppExp (LamExp (x, t, body), rhs) }
 | BIGLAMBDA x=identifier DOT body=expression { AbstrExp (x,body)}
+| PACK s=typ COMMA e=expression IN x=identifier DOT t=typ
+  {
+    let y = "Y" and f = "f" in
+    AbstrExp (y, LamExp (f, ForallTy (x, FunTy (t,VarTy y)),
+      AppExp (InstExp(VarExp f, s), e)))
+  }
+| UNPACK LBRACKET t11=typ COMMA t2=typ RBRACKET
+    xt=identifier COMMA x=identifier EQUAL e1=expression IN e2=expression
+  {
+    AppExp (InstExp(e1, t2), (AbstrExp (xt, LamExp(x,t11, e2))))
+  }
 | e=cast_expression { e }
 
   term_variable: x=identifier { x }
@@ -125,8 +140,10 @@ type_variable:
 type_name:
 | alpha=A_IDENTIFIER { alpha }
 
+/*
 location:
 | l=identifier { l }
+*/
 
 identifier:
 | id=A_IDENTIFIER { id }
