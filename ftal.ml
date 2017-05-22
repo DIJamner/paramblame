@@ -140,7 +140,7 @@ module Lang = struct
     | e -> group (parens (p_exp e))
 
   and p_app_exp = function
-    | AppExp (e1, e2) -> p_simple_exp e1 ^/^ p_simple_exp e2
+    | AppExp (e1, e2) -> group (p_simple_exp e1 ^/^ group (p_simple_exp e2))
     | InstExp (e, t) -> p_app_exp e ^/^ brackets (p_ty t)
     | e -> p_simple_exp e
 
@@ -193,8 +193,8 @@ module Lang = struct
     | _ -> parens (p_ctx c))
     
   and p_app_ctx (c : evalctx) : document = nest 2 (match c with
-    | AppCtx1 (c, e2) -> p_ctx c ^/^ group (p_exp e2)
-    | AppCtx2 (e1, c) -> p_exp e1 ^^ break 1 ^^ p_ctx c
+    | AppCtx1 (c, e2) -> group (p_ctx c ^/^ group (p_exp e2))
+    | AppCtx2 (e1, c) -> group (p_exp e1 ^/^ group (p_ctx c))
     | InstCtx (c,t) -> p_ctx c ^^ space ^^ brackets (p_ty t)
     | _ -> p_simple_ctx c)
     
