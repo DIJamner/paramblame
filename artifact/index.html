@@ -186,6 +186,36 @@
           <td><code>let x : T = e<sub>1</sub> in e<sub>2</sub></code></td>
           <td>Let expressions require a type annotation.</td>
         </tr>
+
+	<tr>
+	  <td></td>
+	  <td><code>exists X. T</code></td>
+	  <td>Existential types are provided by encoding into universals</td>  
+	</tr>
+
+	<tr>
+	  <td></td>
+	  <td><code>pack T<sub>1</sub>, e in X. T<sub>2</sub></code>
+	  <td>Create an existential package from the value of <code>e</code>,
+	    hiding type <code>T<sub>1</sub></code> as <code>X</code>
+	    inside <code>T<sub>2</sub></code>.
+	    Expression <code>e</code> should have type
+	    <code>T<sub>2</sub>[T<sub>1</sub>/X]</code>.
+	    The result type is <code>exists X. T<sub>2</sub></code>. </td>
+	</tr>
+
+	<tr>
+	  <td></td>
+	  <td><code>unpack[T<sub>1</sub>,T<sub>2</sub>] X,x = e<sub>1</sub> in e<sub>2</sub> </code></td>
+	  <td>Unpack an existential. The expression <code>e<sub>1</sub></code>
+	    should have type <code>exists X. T<sub>1</sub></code>
+	    and expression <code>e<sub>2</sub></code> should have
+	    type <code>T<sub>2</sub></code>. The variable
+	    <code>x</code> has type <code>T<sub>1</sub></code> and is
+	    in scope for <code>e<sub>2</sub></code>.
+	  </td>
+	</tr>
+	
     </table>
 	
 <!--
