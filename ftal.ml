@@ -161,14 +161,14 @@ module Lang = struct
       ^^ p_ty t1 ^/^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2)
     | CastExp (e, t1, lbl, t2) -> p_cast_exp e ^/^ group (colon ^^ space
       ^^ p_ty t1 ^/^ !^"=>" ^^ space ^^ p_ty t2) (* TODO: lbl *)
-    | e -> p_arith_exp e
+    | e -> group (p_arith_exp e)
 
   and p_exp (e : exp) : document =
     group @@ nest 2 (match e with
     | IfExp(et,e1,e2) ->
-      !^"if" ^^ space ^^ p_cast_exp et
-      ^/^ !^"then" ^^space^^ p_cast_exp e1
-      ^/^ !^"else" ^^space^^ p_cast_exp e2
+      !^"if" ^^ space ^^ group (p_cast_exp et)
+        ^/^ !^"then" ^^space^^ group (p_cast_exp e1)
+      ^/^ !^"else" ^^space^^ group (p_cast_exp e2)
     | LamExp(x, t, e) ->
       !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^/^ p_exp e
     | AbstrExp(x, e) ->
@@ -208,13 +208,14 @@ module Lang = struct
       ^^ p_ty t1 ^/^ p_lbl lbl ^^ !^"=>" ^^ space ^^ p_ty t2)
     | CastCtx (c, t1, lbl, t2) -> p_cast_ctx c ^/^ group (colon ^^ space
       ^^ p_ty t1 ^/^ !^"=>" ^^ space ^^ p_ty t2) (* TODO: lbl *)
-    | e -> p_arith_ctx e
+    | e -> group (p_arith_ctx e)
   
   and p_ctx (c : evalctx) : document =
     nest 2 (match c with
     | IfCtx (c,e1,e2) ->
-      !^"if" ^^ space ^^ p_ctx c ^/^ !^"then" ^^space^^ p_exp e1 ^/^
-      !^"else" ^^ space ^^ p_exp e2
+      !^"if" ^^ space ^^ (p_ctx c) ^/^ 
+      !^"then" ^^space^^ group (p_exp e1) ^/^
+      !^"else" ^^ space ^^ group (p_exp e2)
     | LamCtx(x, t, c) ->
       !^"lam " ^^ parens (!^x ^^ colon ^^ p_ty t) ^^ !^"." ^/^ group (p_ctx c)
     | AbstrCtx(x, cv) ->
