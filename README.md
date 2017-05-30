@@ -24,19 +24,13 @@ RUN TESTS:
 SETUP
 
 - install docker
-- `docker build -t funtal .`
+- `docker build -t paramblame .`
 
 EDITOR:
 
-- Copy built javascript file: `docker run --rm funtal cat /funtal/artifact/web.js > artifact/web.js`
+- Copy built javascript file: `docker run --rm paramblame cat /paramblame/artifact/web.js > artifact/web.js`
 - Open `artifact/index.html` in a browser.
 
 RUN TESTS:
 
-- `docker run funtal`
-
-## Install pre-built artifact from docker hub
-
-- `docker run dbp1/funtal`
-
-This is automatically built by docker from this repository, and hosted here: https://hub.docker.com/r/dbp1/funtal/
+- `docker run paramblame`
