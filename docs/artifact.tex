@@ -1,0 +1,149 @@
+\documentclass[11pt,numbers,nocopyrightspace,acmlarge,anonymous]{acmart}
+
+
+\usepackage{amsmath,bm,amssymb,stmaryrd}
+\usepackage{amsthm}
+
+\begin{document}
+
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+% Uncomment the publication rights you want to use.
+%\publicationrights{transferred}
+%\publicationrights{licensed}     % this is the default
+%\publicationrights{author-pays}
+
+%\titlebanner{Under Review}        % These are ignored unless
+%\preprintfooter{FunTAL: Reasonably mixing a functional language with assembly}   % 'preprint' option specified.
+
+\title{Theorems for Free for Free: Parametricity, With and Without Types}
+\subtitle{\vspace{-3cm}} % Yay double blindness, so much room!
+          \onecolumn
+          \begin{centering}
+            \LARGE{Theorems for Free for Free: Parametricity, With and Without Types}
+          \end{centering}
+          \vspace{1cm}
+
+\section{Abstract}
+The polymorphic blame calculus integrates static typing, including
+universal types, with dynamic typing. The primary challenge with this
+integration is preserving parametricity: even dynamically-typed code
+should satisfy it once it has been cast to a universal type.  Ahmed
+et~al.~(2011) employ runtime type generation in the polymorphic blame
+calculus to preserve parametricity, but a proof that it does so has
+been elusive.  Matthews and Ahmed~(2008) gave a proof of parametricity
+for a closely related system that combines ML and Scheme, but later
+found a flaw in their proof.
+%
+In this paper we present an improved version of the polymorphic blame
+calculus and we prove that it satisfies relational parametricity. The
+proof relies on a step-indexed Kripke logical relation. The
+step-indexing is required to make the logical relation well-defined in
+the case for the dynamic type. The possible worlds include the mapping
+of generated type names to their types and the mapping of type names
+to relations. We prove the Fundamental Property of this logical
+relation and that it is sound with respect to contextual equivalence.
+%
+To demonstrate the utility of parametricity in the polymorphic blame
+calculus, we derive two free theorems.
+
+\section{Artifact description}
+We present a type checker and stepper for the Polymorphic Blame Calculus.
+Programs written in the code box below may be typechecked and, if they pass,
+loaded into the stepper. Programs in the stepper are split into redex and context
+and may be evaluated either one step at a time or 100 steps at a time.
+The global name store is also displayed.
+Additionally, our artifact includes a step backwards button that reverses the last step taken.
+
+\section{Getting Started}
+
+The artifact is presented as an online editor / stepper at\\
+
+\verb|http://www.ccs.neu.edu/home/dijamner/paramblame/artifact/| \\
+
+\noindent The source code, which is linked from that page, is at\\
+
+\verb|https://github.com/dijamner/paramblame| 
+
+\section{Building artifact}
+
+To build the artifact and run its test suite, the following options
+are available:
+
+\paragraph{OCaml} With \verb|OCaml 4.03| and \verb|opam| installed,
+you can set the package up with \verb|make install-deps|, \verb|make|,
+and then running \verb|./test.native|. Note that this has been tested
+on Fedorah 22 and Mac OSX 10.11. To run the editor locally,
+after building open the file \verb|artifact/index.html| in a browser.
+
+\paragraph{Docker} With Docker (tested with 17.03.1-ce), you can build and
+run the test suite by running 
+\verb|docker build -t paramblame .| 
+and then, once that finishes, \verb|docker run paramblame|, which will run the test
+suite. If you'd like to run the editor locally, you must copy the
+javascript out of the docker image with
+
+\verb|docker run --rm paramblame cat /paramblame/artifact/web.js > artifact/web.js| 
+
+\noindent and then open \verb|artifact/index.html| in a browser.
+
+In both cases, you can then change the tests (in \verb|test.ml|) and
+re-run the commands to run the modified tests (in the \verb|OCaml|
+case, you need not run \verb|make install-deps| again, though it does
+not hurt).
+
+\section{Assessing artifact}
+
+Our artifact should be evaluated on its usefulness
+as an aid to help readers understand 
+the operational semantics of the polymorphic blame calculus.
+Thanks to the design of the artifact,
+it allows readers to observe firsthand the
+conversion generation procedures and 
+runtime name generation that preserves parametricity in
+this calculus.
+
+This artifact will constitute a useful supplement
+to our paper if it allows readers to follow along
+with the examples in the paper and observe when
+our language produces type errors,
+when programs step to blame,
+and when programs return results.
+The best way to utilize this artifact is to
+follow along with the examples in the paper,
+as described below.
+
+\section{Examples}
+
+Our test suite is primarily composed of examples from
+the paper. We have included a couple examples from the paper,
+in the web page itself 
+as well as a couple of additional examples,
+to demonstrate how to write code for this artifact. 
+
+\begin{itemize}
+\item \textbf{Simple call} 
+	A simple example from STLC with a function call
+	to see how the artifact works.
+\item \textbf{Omega} We use the dynamic type to 
+	enable self-application and produce a diverging program.
+\item \textbf{Factorial} We include factorial
+	as an example of a program with meaningful computational
+	content that uses the dynamic type.
+\item \textbf{Invalid cast} This example demonstrates
+	that our type checker does not permit casts
+	that cannot work.
+\item \textbf{Trying to use dynamic type without a cast}
+	This example shows that our language uses casts
+	as the only way to produce values of the dynamic type.
+\end{itemize}
+
+
+\section{Limitations}
+Users may only write programs under a closed store.
+We feel that this represents the class of programs
+that users are likely to write, since conversions
+are best thought of as an internal implementation detail.
+\end{document}
