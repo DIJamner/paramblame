@@ -9,10 +9,6 @@ let cpos {Lexing.pos_fname; pos_lnum; pos_cnum; pos_bol} =
 
 let dummy_loc = { line = -1; col = -1 }
 
-module FTAL = struct
-  exception TypeError of string * int * int (* TODO: put in the right place *)
- end
-
 module Lang = struct
   open PPrint
   (* Symbols *)
