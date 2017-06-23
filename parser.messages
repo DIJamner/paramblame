@@ -1,6 +1,6 @@
 expression_eof: BIGLAMBDA OTHER_IDENTIFIER DOT TIMES 
 ##
-## Ends in an error in state: 88.
+## Ends in an error in state: 105.
 ##
 ## expression -> BIGLAMBDA identifier DOT . expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -11,9 +11,9 @@ expression_eof: BIGLAMBDA OTHER_IDENTIFIER DOT TIMES
 Parsing a type abstraction expression of the form "Lam ID. EXP",
 we have parsed "Lam ID." and now expect an expression.
 
-expression_eof: BIGLAMBDA OTHER_IDENTIFIER TRUE 
+expression_eof: BIGLAMBDA OTHER_IDENTIFIER UNPACK 
 ##
-## Ends in an error in state: 87.
+## Ends in an error in state: 104.
 ##
 ## expression -> BIGLAMBDA identifier . DOT expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -24,9 +24,9 @@ expression_eof: BIGLAMBDA OTHER_IDENTIFIER TRUE
 Parsing a type abstraction expression of the form "Lam ID. EXP",
 we have parsed "Lam ID" and now expect a '.'.
 
-expression_eof: BIGLAMBDA TRUE 
+expression_eof: BIGLAMBDA UNPACK 
 ##
-## Ends in an error in state: 86.
+## Ends in an error in state: 103.
 ##
 ## expression -> BIGLAMBDA . identifier DOT expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -39,7 +39,7 @@ we have parsed "Lam" and now expect an identifier.
 
 expression_eof: BLAME COLON LPAREN TIMES THEN 
 ##
-## Ends in an error in state: 49.
+## Ends in an error in state: 66.
 ##
 ## simple_expression -> BLAME COLON LPAREN typ . RPAREN [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -50,15 +50,15 @@ expression_eof: BLAME COLON LPAREN TIMES THEN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 25, spurious reduction of production typ -> simple_typ 
+## In state 20, spurious reduction of production typ -> simple_typ 
 ##
 
 Parsing a blame expression of the form "blame : (TYP)",
 we have parsed "blame : (TYP" and now expect a ')'.
 
-expression_eof: BLAME COLON LPAREN TRUE 
+expression_eof: BLAME COLON LPAREN UNPACK 
 ##
-## Ends in an error in state: 48.
+## Ends in an error in state: 65.
 ##
 ## simple_expression -> BLAME COLON LPAREN . typ RPAREN [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -69,9 +69,9 @@ expression_eof: BLAME COLON LPAREN TRUE
 Parsing a blame expression of the form "blame : (TYP)",
 we have parsed "blame : (" and now expect a type.
 
-expression_eof: BLAME COLON TRUE 
+expression_eof: BLAME COLON UNPACK 
 ##
-## Ends in an error in state: 47.
+## Ends in an error in state: 64.
 ##
 ## simple_expression -> BLAME COLON . LPAREN typ RPAREN [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -82,9 +82,9 @@ expression_eof: BLAME COLON TRUE
 Parsing a blame expression of the form "blame : (TYP)",
 we have parsed "blame :" and now expect a '('.
 
-expression_eof: BLAME TRUE 
+expression_eof: BLAME UNPACK 
 ##
-## Ends in an error in state: 46.
+## Ends in an error in state: 63.
 ##
 ## simple_expression -> BLAME . COLON LPAREN typ RPAREN [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -95,22 +95,9 @@ expression_eof: BLAME TRUE
 Parsing a blame expression of the form "blame : (TYP)",
 we have parsed "blame" and now expect a colon.
 
-expression_eof: IF TIMES 
-##
-## Ends in an error in state: 44.
-##
-## expression -> IF . cast_expression THEN cast_expression ELSE cast_expression [ RPAREN RANGLE IN EOF COMMA ]
-##
-## The known suffix of the stack is as follows:
-## IF 
-##
-
-Parsing an if expression of the form "if EXP then EXP else EXP",
-we have parsed "if" and now expect an expression.
-
 expression_eof: IF TRUE RPAREN 
 ##
-## Ends in an error in state: 55.
+## Ends in an error in state: 72.
 ##
 ## cast_expression -> cast_expression . COLON typ conv_lbl CAST typ [ THEN COLON ]
 ## cast_expression -> cast_expression . COLON typ CAST typ [ THEN COLON ]
@@ -123,42 +110,16 @@ expression_eof: IF TRUE RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 75, spurious reduction of production arith_expression -> app_expression 
-## In state 72, spurious reduction of production cast_expression -> arith_expression 
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
 ##
 
 Parsing an if expression of the form "if EXP then EXP else EXP",
 we have parsed "if EXP" and now expect a "then", but encountered a ')'.
 
-expression_eof: IF TRUE THEN TIMES 
-##
-## Ends in an error in state: 56.
-##
-## expression -> IF cast_expression THEN . cast_expression ELSE cast_expression [ RPAREN RANGLE IN EOF COMMA ]
-##
-## The known suffix of the stack is as follows:
-## IF cast_expression THEN 
-##
-
-Parsing an if expression of the form "if EXP then EXP else EXP",
-we have parsed "if EXP then" and now expect an expression.
-
-expression_eof: IF TRUE THEN TRUE ELSE TIMES 
-##
-## Ends in an error in state: 58.
-##
-## expression -> IF cast_expression THEN cast_expression ELSE . cast_expression [ RPAREN RANGLE IN EOF COMMA ]
-##
-## The known suffix of the stack is as follows:
-## IF cast_expression THEN cast_expression ELSE 
-##
-
-Parsing an if expression of the form "if EXP then EXP else EXP",
-we have parsed "if EXP then EXP else" and now expect an expression.
-
 expression_eof: IF TRUE THEN TRUE ELSE TRUE THEN 
 ##
-## Ends in an error in state: 59.
+## Ends in an error in state: 76.
 ##
 ## cast_expression -> cast_expression . COLON typ conv_lbl CAST typ [ RPAREN RANGLE IN EOF COMMA COLON ]
 ## cast_expression -> cast_expression . COLON typ CAST typ [ RPAREN RANGLE IN EOF COMMA COLON ]
@@ -171,17 +132,30 @@ expression_eof: IF TRUE THEN TRUE ELSE TRUE THEN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 75, spurious reduction of production arith_expression -> app_expression 
-## In state 72, spurious reduction of production cast_expression -> arith_expression 
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
 ##
 
 Parsed an if expression, but next encountered a "then". 
 If the if expression is the condition of an outer if expression,
 you should wrap it in parentheses.
 
+expression_eof: IF TRUE THEN TRUE ELSE UNPACK 
+##
+## Ends in an error in state: 75.
+##
+## expression -> IF cast_expression THEN cast_expression ELSE . cast_expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## IF cast_expression THEN cast_expression ELSE 
+##
+
+Parsing an if expression of the form "if EXP then EXP else EXP",
+we have parsed "if EXP then EXP else" and now expect an expression.
+
 expression_eof: IF TRUE THEN TRUE THEN 
 ##
-## Ends in an error in state: 57.
+## Ends in an error in state: 74.
 ##
 ## cast_expression -> cast_expression . COLON typ conv_lbl CAST typ [ ELSE COLON ]
 ## cast_expression -> cast_expression . COLON typ CAST typ [ ELSE COLON ]
@@ -194,16 +168,46 @@ expression_eof: IF TRUE THEN TRUE THEN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 75, spurious reduction of production arith_expression -> app_expression 
-## In state 72, spurious reduction of production cast_expression -> arith_expression 
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
 ##
 
 Parsing an if expression of the form "if EXP then EXP else EXP",
 we have parsed "if EXP then EXP" and now expect an "else".
 
+expression_eof: IF TRUE THEN UNPACK 
+##
+## Ends in an error in state: 73.
+##
+## expression -> IF cast_expression THEN . cast_expression ELSE cast_expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## IF cast_expression THEN 
+##
+
+Parsing an if expression of the form "if EXP then EXP else EXP",
+we have parsed "if EXP then" and now expect an expression.
+If you believe the next term to be an expression, try using
+parentheses.
+
+expression_eof: IF UNPACK 
+##
+## Ends in an error in state: 61.
+##
+## expression -> IF . cast_expression THEN cast_expression ELSE cast_expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## IF 
+##
+
+Parsing an if expression of the form "if EXP then EXP else EXP",
+we have parsed "if" and now expect an expression.
+If you believe the next term to be an expression, try using
+parentheses.
+
 expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TIMES RPAREN DOT TIMES 
 ##
-## Ends in an error in state: 43.
+## Ends in an error in state: 60.
 ##
 ## expression -> LAMBDA LPAREN term_variable COLON typ RPAREN DOT . expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -214,9 +218,9 @@ expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TIMES RPAREN DOT TIMES
 Parsing a lambda expression of the form "lam (ID : TYP). EXP",
 we have parsed "lam (ID : TYP)." and now expect an expression.
 
-expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TIMES RPAREN TRUE 
+expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TIMES RPAREN UNPACK 
 ##
-## Ends in an error in state: 42.
+## Ends in an error in state: 59.
 ##
 ## expression -> LAMBDA LPAREN term_variable COLON typ RPAREN . DOT expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -229,7 +233,7 @@ we have parsed "lam (ID : TYP)" and now expect a '.'.
 
 expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TIMES THEN 
 ##
-## Ends in an error in state: 41.
+## Ends in an error in state: 58.
 ##
 ## expression -> LAMBDA LPAREN term_variable COLON typ . RPAREN DOT expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -240,15 +244,15 @@ expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TIMES THEN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 25, spurious reduction of production typ -> simple_typ 
+## In state 20, spurious reduction of production typ -> simple_typ 
 ##
 
 Parsing a lambda expression of the form "lam (ID : TYP). EXP",
 we have parsed "lam (ID : TYP" and now expect a ')'.
 
-expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TRUE 
+expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON UNPACK 
 ##
-## Ends in an error in state: 40.
+## Ends in an error in state: 57.
 ##
 ## expression -> LAMBDA LPAREN term_variable COLON . typ RPAREN DOT expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -259,9 +263,9 @@ expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER COLON TRUE
 Parsing a lambda expression of the form "lam (ID : TYP). EXP",
 we have parsed "lam (ID :" and now expect a type.
 
-expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER TRUE 
+expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER UNPACK 
 ##
-## Ends in an error in state: 39.
+## Ends in an error in state: 56.
 ##
 ## expression -> LAMBDA LPAREN term_variable . COLON typ RPAREN DOT expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -272,9 +276,9 @@ expression_eof: LAMBDA LPAREN OTHER_IDENTIFIER TRUE
 Parsing a lambda expression of the form "lam (ID : TYP). EXP",
 we have parsed "lam (ID" and now expect a colon.
 
-expression_eof: LAMBDA LPAREN TRUE 
+expression_eof: LAMBDA LPAREN UNPACK 
 ##
-## Ends in an error in state: 38.
+## Ends in an error in state: 55.
 ##
 ## expression -> LAMBDA LPAREN . term_variable COLON typ RPAREN DOT expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -285,9 +289,9 @@ expression_eof: LAMBDA LPAREN TRUE
 Parsing a lambda expression of the form "lam (ID : TYP). EXP",
 we have parsed "lam (" and now expect an identifier.
 
-expression_eof: LAMBDA TRUE 
+expression_eof: LAMBDA UNPACK 
 ##
-## Ends in an error in state: 37.
+## Ends in an error in state: 54.
 ##
 ## expression -> LAMBDA . LPAREN term_variable COLON typ RPAREN DOT expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -300,7 +304,7 @@ we have parsed "lam" and now expect a '('.
 
 expression_eof: LANGLE TIMES 
 ##
-## Ends in an error in state: 36.
+## Ends in an error in state: 53.
 ##
 ## simple_expression -> LANGLE . expression COMMA expression RANGLE [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -313,7 +317,7 @@ we have parsed "<" and now expect an expression.
 
 expression_eof: LANGLE TRUE COMMA TIMES 
 ##
-## Ends in an error in state: 93.
+## Ends in an error in state: 110.
 ##
 ## simple_expression -> LANGLE expression COMMA . expression RANGLE [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -326,7 +330,7 @@ we have parsed "<EXP," and now expect an expression.
 
 expression_eof: LANGLE TRUE COMMA TRUE RPAREN 
 ##
-## Ends in an error in state: 94.
+## Ends in an error in state: 111.
 ##
 ## simple_expression -> LANGLE expression COMMA expression . RANGLE [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -337,9 +341,9 @@ expression_eof: LANGLE TRUE COMMA TRUE RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 75, spurious reduction of production arith_expression -> app_expression 
-## In state 72, spurious reduction of production cast_expression -> arith_expression 
-## In state 90, spurious reduction of production expression -> cast_expression 
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
+## In state 107, spurious reduction of production expression -> cast_expression 
 ##
 
 Parsing a pair expression of the form "<EXP, EXP>",
@@ -347,7 +351,7 @@ we have parsed "<EXP, EXP" and now expect a '>'.
 
 expression_eof: LANGLE TRUE RPAREN 
 ##
-## Ends in an error in state: 92.
+## Ends in an error in state: 109.
 ##
 ## simple_expression -> LANGLE expression . COMMA expression RANGLE [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -358,9 +362,9 @@ expression_eof: LANGLE TRUE RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 75, spurious reduction of production arith_expression -> app_expression 
-## In state 72, spurious reduction of production cast_expression -> arith_expression 
-## In state 90, spurious reduction of production expression -> cast_expression 
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
+## In state 107, spurious reduction of production expression -> cast_expression 
 ##
 
 Parsing a pair expression of the form "<EXP, EXP>",
@@ -368,7 +372,7 @@ we have parsed "<EXP" and now expect a ','.
 
 expression_eof: LET OTHER_IDENTIFIER COLON TIMES EQUAL TIMES 
 ##
-## Ends in an error in state: 35.
+## Ends in an error in state: 52.
 ##
 ## expression -> LET term_variable COLON typ EQUAL . expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -381,7 +385,7 @@ we have parsed "let ID : TYP =" and now expect an expression.
 
 expression_eof: LET OTHER_IDENTIFIER COLON TIMES EQUAL TRUE IN TIMES 
 ##
-## Ends in an error in state: 97.
+## Ends in an error in state: 114.
 ##
 ## expression -> LET term_variable COLON typ EQUAL expression IN . expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -394,7 +398,7 @@ we have parsed "let ID : TYP = EXP in" and now expect an expression.
 
 expression_eof: LET OTHER_IDENTIFIER COLON TIMES EQUAL TRUE RPAREN 
 ##
-## Ends in an error in state: 96.
+## Ends in an error in state: 113.
 ##
 ## expression -> LET term_variable COLON typ EQUAL expression . IN expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -405,9 +409,9 @@ expression_eof: LET OTHER_IDENTIFIER COLON TIMES EQUAL TRUE RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 75, spurious reduction of production arith_expression -> app_expression 
-## In state 72, spurious reduction of production cast_expression -> arith_expression 
-## In state 90, spurious reduction of production expression -> cast_expression 
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
+## In state 107, spurious reduction of production expression -> cast_expression 
 ##
 
 Parsing a let expression of the form "let ID : TYP = EXP in EXP",
@@ -415,7 +419,7 @@ we have parsed "let ID : TYP = EXP" and now expect an 'in'.
 
 expression_eof: LET OTHER_IDENTIFIER COLON TIMES THEN 
 ##
-## Ends in an error in state: 34.
+## Ends in an error in state: 51.
 ##
 ## expression -> LET term_variable COLON typ . EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -426,15 +430,15 @@ expression_eof: LET OTHER_IDENTIFIER COLON TIMES THEN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 25, spurious reduction of production typ -> simple_typ 
+## In state 20, spurious reduction of production typ -> simple_typ 
 ##
 
 Parsing a let expression of the form "let ID : TYP = EXP in EXP",
 we have parsed "let ID : TYP" and now expect an '='.
 
-expression_eof: LET OTHER_IDENTIFIER COLON TRUE 
+expression_eof: LET OTHER_IDENTIFIER COLON UNPACK 
 ##
-## Ends in an error in state: 13.
+## Ends in an error in state: 50.
 ##
 ## expression -> LET term_variable COLON . typ EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -445,9 +449,9 @@ expression_eof: LET OTHER_IDENTIFIER COLON TRUE
 Parsing a let expression of the form "let ID : TYP = EXP in EXP",
 we have parsed "let ID :" and now expect a type.
 
-expression_eof: LET OTHER_IDENTIFIER TRUE 
+expression_eof: LET OTHER_IDENTIFIER UNPACK 
 ##
-## Ends in an error in state: 12.
+## Ends in an error in state: 49.
 ##
 ## expression -> LET term_variable . COLON typ EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -458,9 +462,9 @@ expression_eof: LET OTHER_IDENTIFIER TRUE
 Parsing a let expression of the form "let ID : TYP = EXP in EXP",
 we have parsed "let ID" and now expect a colon.
 
-expression_eof: LET TRUE 
+expression_eof: LET UNPACK 
 ##
-## Ends in an error in state: 9.
+## Ends in an error in state: 48.
 ##
 ## expression -> LET . term_variable COLON typ EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
 ##
@@ -473,7 +477,7 @@ we have parsed "let" and now expect an identifier.
 
 expression_eof: LPAREN TIMES 
 ##
-## Ends in an error in state: 5.
+## Ends in an error in state: 41.
 ##
 ## simple_expression -> LPAREN . expression RPAREN [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -486,7 +490,7 @@ we have parsed "(" and now expect an expression.
 
 expression_eof: LPAREN TRUE RANGLE 
 ##
-## Ends in an error in state: 99.
+## Ends in an error in state: 121.
 ##
 ## simple_expression -> LPAREN expression . RPAREN [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -497,17 +501,17 @@ expression_eof: LPAREN TRUE RANGLE
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 75, spurious reduction of production arith_expression -> app_expression 
-## In state 72, spurious reduction of production cast_expression -> arith_expression 
-## In state 90, spurious reduction of production expression -> cast_expression 
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
+## In state 107, spurious reduction of production expression -> cast_expression 
 ##
 
 Parsing a parenthesized expression of the form "(EXP)",
 we have parsed "(EXP" and now expect a ')'.
 
-expression_eof: MINUS INTEGER TRUE 
+expression_eof: MINUS INTEGER UNPACK 
 ##
-## Ends in an error in state: 72.
+## Ends in an error in state: 89.
 ##
 ## arith_expression -> arith_expression . PLUS arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
 ## arith_expression -> arith_expression . MINUS arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
@@ -522,9 +526,9 @@ expression_eof: MINUS INTEGER TRUE
 Parsing an arithmetic expression of the form "EXP OP EXP",
 we have parsed "EXP" and now expect one of "+", "-", or "*".
 
-expression_eof: MINUS TRUE 
+expression_eof: MINUS UNPACK 
 ##
-## Ends in an error in state: 6.
+## Ends in an error in state: 45.
 ##
 ## arith_expression -> MINUS . nat [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
 ##
@@ -535,9 +539,316 @@ expression_eof: MINUS TRUE
 Parsing a number of the form "-n",
 we have parsed "-" and now expect a natural number.
 
-expression_eof: PI1 TIMES 
+expression_eof: PACK EXISTS OTHER_IDENTIFIER DOT UNPACK 
 ##
-## Ends in an error in state: 3.
+## Ends in an error in state: 15.
+##
+## typ -> EXISTS identifier DOT . typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## EXISTS identifier DOT 
+##
+
+Parsing an existential type of the form "exists X. TYP",
+we have parsed "exists X." and now expect a type.
+
+
+expression_eof: PACK EXISTS OTHER_IDENTIFIER UNPACK 
+##
+## Ends in an error in state: 14.
+##
+## typ -> EXISTS identifier . DOT typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## EXISTS identifier 
+##
+
+Parsing an existential type of the form "exists X. TYP",
+we have parsed "exists X" and now expect a '.'.
+
+expression_eof: PACK EXISTS UNPACK 
+##
+## Ends in an error in state: 13.
+##
+## typ -> EXISTS . identifier DOT typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## EXISTS 
+##
+
+Parsing an existential type of the form "exists X. TYP",
+we have parsed "exists" and now expect a type variable.
+
+expression_eof: PACK FORALL OTHER_IDENTIFIER DOT UNPACK 
+##
+## Ends in an error in state: 12.
+##
+## typ -> FORALL identifier DOT . typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## FORALL identifier DOT 
+##
+
+Parsing a forall type of the form "forall ID. TYP",
+we have parsed "forall ID." and now expect a type.
+
+expression_eof: PACK FORALL OTHER_IDENTIFIER UNPACK 
+##
+## Ends in an error in state: 11.
+##
+## typ -> FORALL identifier . DOT typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## FORALL identifier 
+##
+
+Parsing a forall type of the form "forall ID. TYP",
+we have parsed "forall ID" and now expect a '.'.
+
+expression_eof: PACK FORALL UNPACK 
+##
+## Ends in an error in state: 7.
+##
+## typ -> FORALL . identifier DOT typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## FORALL 
+##
+
+Parsing a forall type of the form "forall ID. TYP",
+we have parsed "forall" and now expect an indentifier.
+
+expression_eof: PACK LANGLE TIMES COMMA TIMES THEN 
+##
+## Ends in an error in state: 26.
+##
+## simple_typ -> LANGLE typ COMMA typ . RANGLE [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE typ COMMA typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 20, spurious reduction of production typ -> simple_typ 
+##
+
+Parsing a pair type of the form "<TYP, TYP>",
+we have parsed "<TYP, TYP" and now expect a '>'.
+
+expression_eof: PACK LANGLE TIMES COMMA UNPACK 
+##
+## Ends in an error in state: 25.
+##
+## simple_typ -> LANGLE typ COMMA . typ RANGLE [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE typ COMMA 
+##
+
+Parsing a pair type of the form "<TYP, TYP>",
+we have parsed "<TYP," and now expect a type.
+
+expression_eof: PACK LANGLE TIMES THEN 
+##
+## Ends in an error in state: 24.
+##
+## simple_typ -> LANGLE typ . COMMA typ RANGLE [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 20, spurious reduction of production typ -> simple_typ 
+##
+
+Parsing a pair type of the form "<TYP, TYP>",
+we have parsed "<TYP" and now expect a ','.
+
+expression_eof: PACK LANGLE UNPACK 
+##
+## Ends in an error in state: 5.
+##
+## simple_typ -> LANGLE . typ COMMA typ RANGLE [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LANGLE 
+##
+
+Parsing a pair type of the form "<TYP, TYP>",
+we have parsed "<" and now expect a type.
+
+expression_eof: PACK LPAREN TIMES THEN 
+##
+## Ends in an error in state: 28.
+##
+## simple_typ -> LPAREN typ . RPAREN [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LPAREN typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 20, spurious reduction of production typ -> simple_typ 
+##
+
+Parsing a parenthesized type of the form "(TYP)",
+we have parsed "(TYP" and now expect a ')'.
+
+expression_eof: PACK LPAREN UNPACK 
+##
+## Ends in an error in state: 4.
+##
+## simple_typ -> LPAREN . typ RPAREN [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
+##
+## The known suffix of the stack is as follows:
+## LPAREN 
+##
+
+Parsing a parenthesized type of the form "(TYP)",
+we have parsed "(" and now expect a type.
+
+expression_eof: PACK TIMES ARROW UNPACK 
+##
+## Ends in an error in state: 21.
+##
+## typ -> simple_typ ARROW . typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## simple_typ ARROW 
+##
+
+Parsing a function type of the form "TYP -> TYP",
+we have parsed "TYP ->" and now expect a type.
+
+expression_eof: PACK TIMES COMMA TIMES 
+##
+## Ends in an error in state: 44.
+##
+## expression -> PACK typ COMMA . expression IN identifier DOT typ [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## PACK typ COMMA 
+##
+
+Parsing a pack of the form "pack TYP, EXP in X. TYP", 
+we have parsed "pack TYP," and now expect an expression.
+
+expression_eof: PACK TIMES COMMA TRUE IN OTHER_IDENTIFIER DOT UNPACK 
+##
+## Ends in an error in state: 119.
+##
+## expression -> PACK typ COMMA expression IN identifier DOT . typ [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## PACK typ COMMA expression IN identifier DOT 
+##
+
+Parsing a pack of the form "pack TYP, EXP in X. TYP", 
+we have parsed "pack TYP, EXP in X." and now expect a type.
+
+expression_eof: PACK TIMES COMMA TRUE IN OTHER_IDENTIFIER UNPACK 
+##
+## Ends in an error in state: 118.
+##
+## expression -> PACK typ COMMA expression IN identifier . DOT typ [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## PACK typ COMMA expression IN identifier 
+##
+
+Parsing a pack of the form "pack TYP, EXP in X. TYP", 
+we have parsed "pack TYP, EXP in X" and now expect a '.'.
+
+expression_eof: PACK TIMES COMMA TRUE IN UNPACK 
+##
+## Ends in an error in state: 117.
+##
+## expression -> PACK typ COMMA expression IN . identifier DOT typ [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## PACK typ COMMA expression IN 
+##
+
+Parsing a pack of the form "pack TYP, EXP in X. TYP", 
+we have parsed "pack TYP, EXP in" and now expect an identifier.
+
+expression_eof: PACK TIMES COMMA TRUE RPAREN 
+##
+## Ends in an error in state: 116.
+##
+## expression -> PACK typ COMMA expression . IN identifier DOT typ [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## PACK typ COMMA expression 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
+## In state 107, spurious reduction of production expression -> cast_expression 
+##
+
+Parsing a pack of the form "pack TYP, EXP in X. TYP", 
+we have parsed "pack TYP, EXP" and now expect an "in".
+
+expression_eof: PACK TIMES THEN 
+##
+## Ends in an error in state: 43.
+##
+## expression -> PACK typ . COMMA expression IN identifier DOT typ [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## PACK typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 20, spurious reduction of production typ -> simple_typ 
+##
+
+Parsing a pack of the form "pack TYP, EXP in X. TYP", 
+we have parsed "pack TYP" and now expect a ','.
+
+expression_eof: PACK TIMES UNPACK 
+##
+## Ends in an error in state: 20.
+##
+## typ -> simple_typ . ARROW typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
+## typ -> simple_typ . [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
+##
+## The known suffix of the stack is as follows:
+## simple_typ 
+##
+
+Parsing a pack of the form "pack TYP, EXP in X. TYP", 
+we have parsed "pack TYP" and now expect a ','.
+
+expression_eof: PACK UNPACK 
+##
+## Ends in an error in state: 42.
+##
+## expression -> PACK . typ COMMA expression IN identifier DOT typ [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## PACK 
+##
+
+Parsing a pack of the form "pack TYP, EXP in X. TYP", 
+we have parsed "pack" and now expect a type.
+
+expression_eof: PI1 UNPACK 
+##
+## Ends in an error in state: 40.
 ##
 ## simple_expression -> PI1 . simple_expression [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -548,9 +859,9 @@ expression_eof: PI1 TIMES
 Parsing a projection of the form "pi1 EXP",
 we have parsed "pi1" and now expect an expression.
 
-expression_eof: PI2 TIMES 
+expression_eof: PI2 UNPACK 
 ##
-## Ends in an error in state: 2.
+## Ends in an error in state: 39.
 ##
 ## simple_expression -> PI2 . simple_expression [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -573,157 +884,9 @@ expression_eof: TIMES
 
 The symbol * is either a type or an operation, not an expression.
 
-expression_eof: TRUE COLON FORALL OTHER_IDENTIFIER DOT TRUE 
+expression_eof: TRUE COLON TIMES CAST UNPACK 
 ##
-## Ends in an error in state: 20.
-##
-## typ -> FORALL identifier DOT . typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
-##
-## The known suffix of the stack is as follows:
-## FORALL identifier DOT 
-##
-
-Parsing a forall type of the form "forall ID. TYP",
-we have parsed "forall ID." and now expect a type.
-
-expression_eof: TRUE COLON FORALL OTHER_IDENTIFIER TRUE 
-##
-## Ends in an error in state: 19.
-##
-## typ -> FORALL identifier . DOT typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
-##
-## The known suffix of the stack is as follows:
-## FORALL identifier 
-##
-
-Parsing a forall type of the form "forall ID. TYP",
-we have parsed "forall ID" and now expect a '.'.
-
-expression_eof: TRUE COLON FORALL TRUE 
-##
-## Ends in an error in state: 18.
-##
-## typ -> FORALL . identifier DOT typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
-##
-## The known suffix of the stack is as follows:
-## FORALL 
-##
-
-Parsing a forall type of the form "forall ID. TYP",
-we have parsed "forall" and now expect an indentifier.
-
-expression_eof: TRUE COLON LANGLE TIMES COMMA TIMES THEN 
-##
-## Ends in an error in state: 30.
-##
-## simple_typ -> LANGLE typ COMMA typ . RANGLE [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
-##
-## The known suffix of the stack is as follows:
-## LANGLE typ COMMA typ 
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 25, spurious reduction of production typ -> simple_typ 
-##
-
-Parsing a pair type of the form "<TYP, TYP>",
-we have parsed "<TYP, TYP" and now expect a '>'.
-
-expression_eof: TRUE COLON LANGLE TIMES COMMA TRUE 
-##
-## Ends in an error in state: 29.
-##
-## simple_typ -> LANGLE typ COMMA . typ RANGLE [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
-##
-## The known suffix of the stack is as follows:
-## LANGLE typ COMMA 
-##
-
-Parsing a pair type of the form "<TYP, TYP>",
-we have parsed "<TYP," and now expect a type.
-
-expression_eof: TRUE COLON LANGLE TIMES THEN 
-##
-## Ends in an error in state: 28.
-##
-## simple_typ -> LANGLE typ . COMMA typ RANGLE [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
-##
-## The known suffix of the stack is as follows:
-## LANGLE typ 
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 25, spurious reduction of production typ -> simple_typ 
-##
-
-Parsing a pair type of the form "<TYP, TYP>",
-we have parsed "<TYP" and now expect a ','.
-
-expression_eof: TRUE COLON LANGLE TRUE 
-##
-## Ends in an error in state: 16.
-##
-## simple_typ -> LANGLE . typ COMMA typ RANGLE [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
-##
-## The known suffix of the stack is as follows:
-## LANGLE 
-##
-
-Parsing a pair type of the form "<TYP, TYP>",
-we have parsed "<" and now expect a type.
-
-expression_eof: TRUE COLON LPAREN TIMES THEN 
-##
-## Ends in an error in state: 32.
-##
-## simple_typ -> LPAREN typ . RPAREN [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
-##
-## The known suffix of the stack is as follows:
-## LPAREN typ 
-##
-## WARNING: This example involves spurious reductions.
-## This implies that, although the LR(1) items shown above provide an
-## accurate view of the past (what has been recognized so far), they
-## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 25, spurious reduction of production typ -> simple_typ 
-##
-
-Parsing a parenthesized type of the form "(TYP)",
-we have parsed "(TYP" and now expect a ')'.
-
-expression_eof: TRUE COLON LPAREN TRUE 
-##
-## Ends in an error in state: 15.
-##
-## simple_typ -> LPAREN . typ RPAREN [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ARROW ]
-##
-## The known suffix of the stack is as follows:
-## LPAREN 
-##
-
-Parsing a parenthesized type of the form "(TYP)",
-we have parsed "(" and now expect a type.
-
-expression_eof: TRUE COLON TIMES ARROW TRUE 
-##
-## Ends in an error in state: 26.
-##
-## typ -> simple_typ ARROW . typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
-##
-## The known suffix of the stack is as follows:
-## simple_typ ARROW 
-##
-
-Parsing an arrow type of the form "TYP -> TYP",
-we have parsed "TYP ->" and now expect a type.
-
-expression_eof: TRUE COLON TIMES CAST TRUE 
-##
-## Ends in an error in state: 67.
+## Ends in an error in state: 84.
 ##
 ## cast_expression -> cast_expression COLON typ CAST . typ [ THEN RPAREN RANGLE IN EOF ELSE COMMA COLON ]
 ##
@@ -734,9 +897,9 @@ expression_eof: TRUE COLON TIMES CAST TRUE
 Parsing a cast expression of the form "EXP : TYP => TYP",
 we have parsed "EXP : TYP =>" and now expect a type.
 
-expression_eof: TRUE COLON TIMES MINUS TRUE 
+expression_eof: TRUE COLON TIMES MINUS UNPACK 
 ##
-## Ends in an error in state: 65.
+## Ends in an error in state: 82.
 ##
 ## conv_lbl -> MINUS . type_name [ CAST ]
 ##
@@ -747,9 +910,9 @@ expression_eof: TRUE COLON TIMES MINUS TRUE
 Parsing a conversion label of the form "-ID",
 we have parsed "-" and now expect an identifier.
 
-expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER CAST TRUE 
+expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER CAST UNPACK 
 ##
-## Ends in an error in state: 70.
+## Ends in an error in state: 87.
 ##
 ## cast_expression -> cast_expression COLON typ conv_lbl CAST . typ [ THEN RPAREN RANGLE IN EOF ELSE COMMA COLON ]
 ##
@@ -758,11 +921,11 @@ expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER CAST TRUE
 ##
 
 Parsing a cast expression of the form "EXP : TYP => TYP",
-we have parsed "EXP : TYP" and now expect a "=>".
+we have parsed "EXP : TYP =>" and now expect a type.
 
-expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER TRUE 
+expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER UNPACK 
 ##
-## Ends in an error in state: 69.
+## Ends in an error in state: 86.
 ##
 ## cast_expression -> cast_expression COLON typ conv_lbl . CAST typ [ THEN RPAREN RANGLE IN EOF ELSE COMMA COLON ]
 ##
@@ -773,9 +936,9 @@ expression_eof: TRUE COLON TIMES PLUS A_IDENTIFIER TRUE
 Parsing a conversion expression of the form "EXP : TYP +ID=> TYP",
 we have parsed "EXP : TYP +ID" and now expect a "=>".
 
-expression_eof: TRUE COLON TIMES PLUS TRUE 
+expression_eof: TRUE COLON TIMES PLUS UNPACK 
 ##
-## Ends in an error in state: 62.
+## Ends in an error in state: 79.
 ##
 ## conv_lbl -> PLUS . type_name [ CAST ]
 ##
@@ -788,7 +951,7 @@ we have parsed "+" and now expect an identifier.
 
 expression_eof: TRUE COLON TIMES THEN 
 ##
-## Ends in an error in state: 61.
+## Ends in an error in state: 78.
 ##
 ## cast_expression -> cast_expression COLON typ . conv_lbl CAST typ [ THEN RPAREN RANGLE IN EOF ELSE COMMA COLON ]
 ## cast_expression -> cast_expression COLON typ . CAST typ [ THEN RPAREN RANGLE IN EOF ELSE COMMA COLON ]
@@ -800,31 +963,16 @@ expression_eof: TRUE COLON TIMES THEN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 25, spurious reduction of production typ -> simple_typ 
+## In state 20, spurious reduction of production typ -> simple_typ 
 ##
 
 Parsing either a conversion expression of the form "EXP : TYP +ID=> TYP",
 or a cast expression of the form "EXP : TYP => TYP",
 we have parsed "EXP : TYP" and now expect either a conversion label or a "=>".
 
-expression_eof: TRUE COLON TIMES TRUE 
+expression_eof: TRUE COLON UNPACK 
 ##
-## Ends in an error in state: 25.
-##
-## typ -> simple_typ . ARROW typ [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
-## typ -> simple_typ . [ THEN RPAREN RBRACKET RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON CAST ]
-##
-## The known suffix of the stack is as follows:
-## simple_typ 
-##
-
-Parsing either a conversion expression of the form "EXP : TYP +ID=> TYP",
-or a cast expression of the form "EXP : TYP => TYP",
-we have parsed "EXP : TYP" and now expect either a conversion label or a "=>".
-
-expression_eof: TRUE COLON TRUE 
-##
-## Ends in an error in state: 60.
+## Ends in an error in state: 77.
 ##
 ## cast_expression -> cast_expression COLON . typ conv_lbl CAST typ [ THEN RPAREN RANGLE IN EOF ELSE COMMA COLON ]
 ## cast_expression -> cast_expression COLON . typ CAST typ [ THEN RPAREN RANGLE IN EOF ELSE COMMA COLON ]
@@ -837,9 +985,9 @@ Parsing either a conversion expression of the form "EXP : TYP +ID=> TYP",
 or a cast expression of the form "EXP : TYP => TYP",
 we have parsed "EXP :" and now expect a type.
 
-expression_eof: TRUE EQUAL MINUS INTEGER TRUE 
+expression_eof: TRUE EQUAL MINUS INTEGER UNPACK 
 ##
-## Ends in an error in state: 85.
+## Ends in an error in state: 102.
 ##
 ## arith_expression -> arith_expression . PLUS arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
 ## arith_expression -> arith_expression . MINUS arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
@@ -855,9 +1003,9 @@ Parsing an arithmetic expression of the form "EXP OP EXP",
 we have parsed "EXP OP EXP" and encountered what looks like an application.
 To perform arithmetic inside an application, please use parentheses.
 
-expression_eof: TRUE EQUAL TIMES 
+expression_eof: TRUE EQUAL UNPACK 
 ##
-## Ends in an error in state: 84.
+## Ends in an error in state: 101.
 ##
 ## arith_expression -> arith_expression EQUAL . arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
 ##
@@ -867,10 +1015,11 @@ expression_eof: TRUE EQUAL TIMES
 
 Parsing an arithmetic expression of the form "EXP OP EXP",
 we have parsed "EXP OP" and now expect an expression.
+If you have written an expression try adding parentheses.
 
 expression_eof: TRUE LBRACKET TIMES THEN 
 ##
-## Ends in an error in state: 77.
+## Ends in an error in state: 94.
 ##
 ## app_expression -> app_expression LBRACKET typ . RBRACKET [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -881,15 +1030,15 @@ expression_eof: TRUE LBRACKET TIMES THEN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 25, spurious reduction of production typ -> simple_typ 
+## In state 20, spurious reduction of production typ -> simple_typ 
 ##
 
 Parsing an instantiation expression of the form "EXP [TYP]",
 we have parsed "EXP [TYP" and now expect a ']'.
 
-expression_eof: TRUE LBRACKET TRUE 
+expression_eof: TRUE LBRACKET UNPACK 
 ##
-## Ends in an error in state: 76.
+## Ends in an error in state: 93.
 ##
 ## app_expression -> app_expression LBRACKET . typ RBRACKET [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
 ##
@@ -900,9 +1049,9 @@ expression_eof: TRUE LBRACKET TRUE
 Parsing an instantiation expression of the form "EXP [TYP]",
 we have parsed "EXP [" and now expect a type.
 
-expression_eof: TRUE MINUS MINUS INTEGER TRUE 
+expression_eof: TRUE MINUS MINUS INTEGER UNPACK 
 ##
-## Ends in an error in state: 83.
+## Ends in an error in state: 100.
 ##
 ## arith_expression -> arith_expression . PLUS arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
 ## arith_expression -> arith_expression . MINUS arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
@@ -918,9 +1067,9 @@ Parsing an arithmetic expression of the form "EXP OP EXP",
 we have parsed "EXP OP EXP" and encountered what looks like an application.
 To perform arithmetic inside an application, please use parentheses.
 
-expression_eof: TRUE MINUS TIMES 
+expression_eof: TRUE MINUS UNPACK 
 ##
-## Ends in an error in state: 82.
+## Ends in an error in state: 99.
 ##
 ## arith_expression -> arith_expression MINUS . arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
 ##
@@ -930,10 +1079,11 @@ expression_eof: TRUE MINUS TIMES
 
 Parsing an arithmetic expression of the form "EXP OP EXP",
 we have parsed "EXP OP" and now expect an expression.
+If you have written an expression try adding parentheses.
 
-expression_eof: TRUE PLUS MINUS INTEGER TRUE 
+expression_eof: TRUE PLUS MINUS INTEGER UNPACK 
 ##
-## Ends in an error in state: 81.
+## Ends in an error in state: 98.
 ##
 ## arith_expression -> arith_expression . PLUS arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
 ## arith_expression -> arith_expression PLUS arith_expression . [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
@@ -949,9 +1099,9 @@ Parsing an arithmetic expression of the form "EXP OP EXP",
 we have parsed "EXP OP EXP" and encountered what looks like an application.
 To perform arithmetic inside an application, please use parentheses.
 
-expression_eof: TRUE PLUS TIMES 
+expression_eof: TRUE PLUS UNPACK 
 ##
-## Ends in an error in state: 80.
+## Ends in an error in state: 97.
 ##
 ## arith_expression -> arith_expression PLUS . arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
 ##
@@ -961,24 +1111,11 @@ expression_eof: TRUE PLUS TIMES
 
 Parsing an arithmetic expression of the form "EXP OP EXP",
 we have parsed "EXP OP" and now expect an expression.
-
-expression_eof: TRUE RBRACKET 
-##
-## Ends in an error in state: 75.
-##
-## app_expression -> app_expression . LBRACKET typ RBRACKET [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
-## app_expression -> app_expression . simple_expression [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
-## arith_expression -> app_expression . [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
-##
-## The known suffix of the stack is as follows:
-## app_expression 
-##
-
-Unmatched ']'.
+If you have written an expression try adding parentheses.
 
 expression_eof: TRUE RPAREN 
 ##
-## Ends in an error in state: 104.
+## Ends in an error in state: 129.
 ##
 ## expression_eof -> expression . EOF [ # ]
 ##
@@ -989,16 +1126,16 @@ expression_eof: TRUE RPAREN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 75, spurious reduction of production arith_expression -> app_expression 
-## In state 72, spurious reduction of production cast_expression -> arith_expression 
-## In state 90, spurious reduction of production expression -> cast_expression 
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
+## In state 107, spurious reduction of production expression -> cast_expression 
 ##
 
 Unmatched ')'.
 
 expression_eof: TRUE THEN 
 ##
-## Ends in an error in state: 90.
+## Ends in an error in state: 107.
 ##
 ## cast_expression -> cast_expression . COLON typ conv_lbl CAST typ [ RPAREN RANGLE IN EOF COMMA COLON ]
 ## cast_expression -> cast_expression . COLON typ CAST typ [ RPAREN RANGLE IN EOF COMMA COLON ]
@@ -1011,15 +1148,15 @@ expression_eof: TRUE THEN
 ## This implies that, although the LR(1) items shown above provide an
 ## accurate view of the past (what has been recognized so far), they
 ## may provide an INCOMPLETE view of the future (what was expected next).
-## In state 75, spurious reduction of production arith_expression -> app_expression 
-## In state 72, spurious reduction of production cast_expression -> arith_expression 
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
 ##
 
 "then" occurs without preceding "if".
 
-expression_eof: TRUE TIMES TIMES 
+expression_eof: TRUE TIMES UNPACK 
 ##
-## Ends in an error in state: 73.
+## Ends in an error in state: 90.
 ##
 ## arith_expression -> arith_expression TIMES . arith_expression [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
 ##
@@ -1029,4 +1166,196 @@ expression_eof: TRUE TIMES TIMES
 
 Parsing an arithmetic expression of the form "EXP OP EXP",
 we have parsed "EXP OP" and now expect an expression.
+If you have written an expression try adding parentheses.
+
+expression_eof: TRUE UNPACK 
+##
+## Ends in an error in state: 92.
+##
+## app_expression -> app_expression . LBRACKET typ RBRACKET [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+## app_expression -> app_expression . simple_expression [ TRUE TIMES THEN RPAREN RANGLE PLUS PI2 PI1 OTHER_IDENTIFIER MINUS LPAREN LBRACKET LANGLE INTEGER IN FALSE EQUAL EOF ELSE COMMA COLON CAP_IDENTIFIER BLAME A_IDENTIFIER ]
+## arith_expression -> app_expression . [ TIMES THEN RPAREN RANGLE PLUS MINUS IN EQUAL EOF ELSE COMMA COLON ]
+##
+## The known suffix of the stack is as follows:
+## app_expression 
+##
+
+Parsing an application, could not disambiguate right side.
+Try adding parentheses.
+
+expression_eof: UNPACK LBRACKET TIMES COMMA TIMES RBRACKET OTHER_IDENTIFIER COMMA OTHER_IDENTIFIER EQUAL TIMES 
+##
+## Ends in an error in state: 37.
+##
+## expression -> UNPACK LBRACKET typ COMMA typ RBRACKET identifier COMMA identifier EQUAL . expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET typ COMMA typ RBRACKET identifier COMMA identifier EQUAL 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [TYP,TYP] X,x =" and expect an expression.
+
+expression_eof: UNPACK LBRACKET TIMES COMMA TIMES RBRACKET OTHER_IDENTIFIER COMMA OTHER_IDENTIFIER EQUAL TRUE IN TIMES 
+##
+## Ends in an error in state: 126.
+##
+## expression -> UNPACK LBRACKET typ COMMA typ RBRACKET identifier COMMA identifier EQUAL expression IN . expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET typ COMMA typ RBRACKET identifier COMMA identifier EQUAL expression IN 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [TYP,TYP] X,x = EXP" and expect an "in".
+
+expression_eof: UNPACK LBRACKET TIMES COMMA TIMES RBRACKET OTHER_IDENTIFIER COMMA OTHER_IDENTIFIER EQUAL TRUE RPAREN 
+##
+## Ends in an error in state: 125.
+##
+## expression -> UNPACK LBRACKET typ COMMA typ RBRACKET identifier COMMA identifier EQUAL expression . IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET typ COMMA typ RBRACKET identifier COMMA identifier EQUAL expression 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 92, spurious reduction of production arith_expression -> app_expression 
+## In state 89, spurious reduction of production cast_expression -> arith_expression 
+## In state 107, spurious reduction of production expression -> cast_expression 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [TYP,TYP] X,x = EXP" and expect an "in".
+
+expression_eof: UNPACK LBRACKET TIMES COMMA TIMES RBRACKET OTHER_IDENTIFIER COMMA OTHER_IDENTIFIER UNPACK 
+##
+## Ends in an error in state: 36.
+##
+## expression -> UNPACK LBRACKET typ COMMA typ RBRACKET identifier COMMA identifier . EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET typ COMMA typ RBRACKET identifier COMMA identifier 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [TYP,TYP] X,x" and expect an '='.
+
+expression_eof: UNPACK LBRACKET TIMES COMMA TIMES RBRACKET OTHER_IDENTIFIER COMMA UNPACK 
+##
+## Ends in an error in state: 35.
+##
+## expression -> UNPACK LBRACKET typ COMMA typ RBRACKET identifier COMMA . identifier EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET typ COMMA typ RBRACKET identifier COMMA 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [TYP,TYP] X," and expect an identifier.
+
+expression_eof: UNPACK LBRACKET TIMES COMMA TIMES RBRACKET OTHER_IDENTIFIER UNPACK 
+##
+## Ends in an error in state: 34.
+##
+## expression -> UNPACK LBRACKET typ COMMA typ RBRACKET identifier . COMMA identifier EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET typ COMMA typ RBRACKET identifier 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [TYP,TYP] X" and expect a ','.
+
+expression_eof: UNPACK LBRACKET TIMES COMMA TIMES RBRACKET UNPACK 
+##
+## Ends in an error in state: 33.
+##
+## expression -> UNPACK LBRACKET typ COMMA typ RBRACKET . identifier COMMA identifier EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET typ COMMA typ RBRACKET 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [TYP,TYP]" and expect an identifier.
+
+expression_eof: UNPACK LBRACKET TIMES COMMA TIMES THEN 
+##
+## Ends in an error in state: 32.
+##
+## expression -> UNPACK LBRACKET typ COMMA typ . RBRACKET identifier COMMA identifier EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET typ COMMA typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 20, spurious reduction of production typ -> simple_typ 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [TYP,TYP" and expect a ']'.
+
+expression_eof: UNPACK LBRACKET TIMES COMMA UNPACK 
+##
+## Ends in an error in state: 31.
+##
+## expression -> UNPACK LBRACKET typ COMMA . typ RBRACKET identifier COMMA identifier EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET typ COMMA 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [TYP," and expect a type.
+
+expression_eof: UNPACK LBRACKET TIMES THEN 
+##
+## Ends in an error in state: 30.
+##
+## expression -> UNPACK LBRACKET typ . COMMA typ RBRACKET identifier COMMA identifier EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET typ 
+##
+## WARNING: This example involves spurious reductions.
+## This implies that, although the LR(1) items shown above provide an
+## accurate view of the past (what has been recognized so far), they
+## may provide an INCOMPLETE view of the future (what was expected next).
+## In state 20, spurious reduction of production typ -> simple_typ 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [TYP" and expect a ','.
+
+expression_eof: UNPACK LBRACKET UNPACK 
+##
+## Ends in an error in state: 2.
+##
+## expression -> UNPACK LBRACKET . typ COMMA typ RBRACKET identifier COMMA identifier EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK LBRACKET 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack [" and expect a type.
+
+expression_eof: UNPACK UNPACK 
+##
+## Ends in an error in state: 1.
+##
+## expression -> UNPACK . LBRACKET typ COMMA typ RBRACKET identifier COMMA identifier EQUAL expression IN expression [ RPAREN RANGLE IN EOF COMMA ]
+##
+## The known suffix of the stack is as follows:
+## UNPACK 
+##
+
+Parsing an unpack of the form "unpack [TYP,TYP] X,x = EXP in EXP",
+we have parsed "unpack" and expect a '['.
 
