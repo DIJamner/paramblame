@@ -3,6 +3,11 @@
 
 \usepackage{amsmath,bm,amssymb,stmaryrd}
 \usepackage{amsthm}
+\usepackage{listings}
+
+\lstset{ %
+morekeywords={*,forall,Lam,lam,int}
+}
 
 \begin{document}
 
@@ -139,6 +144,69 @@ to demonstrate how to write code for this artifact.
 	This example shows that our language uses casts
 	as the only way to produce values of the dynamic type.
 \end{itemize}
+
+As a demonstration of the features of the artifact, enter the
+following program into the code editor:
+
+\begin{lstlisting}
+((Lam X.lam (x : X).x) : forall X. X -> X => int -> int) 5
+\end{lstlisting}
+
+This program first casts the polymorphic identity function to a
+function from \textbf{int} to \textbf{int} and then applies it to
+the integer 5. Hit the "Type check \& load" button to run the type checker
+and initialize the interpreter. The program should appear in the
+interpreter below, broken into redex and context.
+
+Since \textbf{int} to \textbf{int} is a specialization
+of the type of the identity function, the cast should succeed and
+this program should produce 5. Hit the "step $-\!\!>$" button to 
+proceed to the next evaluation step. In this case, the cast breaks
+down into an instantiation and a simpler cast.
+
+Notice that the step counter to the left of the button has increased.
+This counter serves as a convenience to help keep track of program execution.
+Hit the "step $<\!\!-$" button to go back to the last step and see that 
+the step counter decreases again.
+
+Now step forward twice so that the counter reads "2". When the 
+type abstraction is instantiated, three things happen: a new type name,
+"a!0", is generated and bound to the dynamic type in the store 
+at the bottom of the interpreter,
+X is replaced with a!0 in the body of the abstraction, 
+and the result is wrapped in a conversion from a function at type a!0 
+to a function at dynamic type. Note that if this step is repeated,
+it will generate a new name each time. While this is not strictly
+necessary, it is sufficient to guarantee name freshness and simplifies
+the implementation.
+
+Hit the "step $-\!\!>$" button again. The value 5 is pushed under the
+cast. This casts it to the dynamic type so the inner function may be applied
+and then casts the result of that application back to \textbf{int}.
+
+On the next step, the value moves under the conversion the same way
+and is wrapped again. Notice that the conversion on the 5 has a negative
+label. 
+
+Step 5 applies the identity function, leaving the value 5 with
+a series of casts and conversions. The next two steps cancel the 
+conversions and the casts respectively and leave the 5 in the result box.
+
+To see what happens when a cast fails, enter the following modified program:
+
+\begin{lstlisting}
+((Lam X.lam (x:X).(3 : int => * : * => X)) 
+	: forall X. X -> X => int -> int) 5
+\end{lstlisting}
+
+This program attempts to violate parametricity by returning the constant 3
+from a supposedly polymorphic function. As it should, this results in blame.
+
+Step to step 4. The steps up to this point are identical to the previous code.
+Take the next step. This calls the function and returns the cast 3.
+Since X was replaced with a type name rather than the dynamic type,
+the two casts are incompatible. Take another step; the term reduces to blame.
+In one more step, the blame propagates up through the context.
 
 
 \section{Limitations}
