@@ -83,10 +83,13 @@ and then running \verb|./test.native|. Note that this has been tested
 on Fedorah 22 and Mac OSX 10.11. To run the editor locally,
 after building open the file \verb|artifact/index.html| in a browser.
 
-\paragraph{Docker} With Docker (tested with 17.03.1-ce), you can build and
-run the test suite by running 
-\verb|docker build -t paramblame .| 
-and then, once that finishes, \verb|docker run paramblame|, which will run the test
+\paragraph{Docker} With Docker (tested with 17.03.1-ce), 
+load the attached image by running the command
+\verb|docker load -i paramblame.tar| from the directory containing the tar file. Alternately,
+you can build from the GitHub source by running 
+\verb|docker build -t paramblame .| in the paramblame directory.
+Either way, once you have set up the docker image,
+ \verb|docker run paramblame| will run the test
 suite. If you'd like to run the editor locally, you must copy the
 javascript out of the docker image with
 
